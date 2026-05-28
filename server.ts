@@ -37,8 +37,7 @@ DbService.checkConnection().then((connected) => {
   }
 });
 
-// Primary Endpoint Route Mappings (API Gateway Hub)
-app.use("/api", apiGatewayRouter);
+// Note: apiGatewayRouter is mounted below to ensure inline paths are processed correctly without route collision.
 
 
 // Initialize server-side Gemini client lazily
@@ -670,6 +669,9 @@ Tu peux suggérer des solutions d'ingénierie, analyser des tendances de pannes,
     res.status(500).json({ error: `Une erreur s'est produite lors de l'appel à l'IA: ${error.message || error}` });
   }
 });
+
+// Primary Endpoint Route Mappings (API Gateway Hub)
+app.use("/api", apiGatewayRouter);
 
 // Registrar for centralized error boundaries catchings
 app.use(buildErrorHandler);
