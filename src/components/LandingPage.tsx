@@ -60,7 +60,7 @@ interface AppItem {
 
 export default function LandingPage({ onEnterApp }: LandingPageProps) {
   // 1. App Selector Game (Odoo style)
-  const [selectedApps, setSelectedApps] = useState<string[]>(["crm", "hotel", "resto", "erp"]);
+  const [selectedApps, setSelectedApps] = useState<string[]>([]);
   const [activeSimulatorTab, setActiveSimulatorTab] = useState<"hotel" | "resto" | "crm" | "erp">("hotel");
 
   // Setup Wizard State
@@ -446,10 +446,6 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
             
             {/* Odoo Style Badge + High Catchphrase */}
             <div className="max-w-4xl mx-auto space-y-5 mb-11">
-              <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full text-[10px] font-mono font-black text-[#FF7A00] bg-[#FF7A00]/10 border border-[#FF7A00]/15 tracking-wider uppercase">
-                <Sparkles className="h-3.5 w-3.5 text-[#FF7A00]" />
-                SUITE ERP INTÉGRÉE & CONFORME ET EN DIRECT DEPUIS UNE SEULE POSTGRESQL
-              </div>
               <h1 className="text-4xl md:text-6xl font-black tracking-tight text-[#0B1F3A] leading-[1.05] font-sans">
                 Vos employés d'exception <br />
                 <span className="text-transparent bg-clip-text bg-gradient-to-r from-[#FF7A00] to-[#E06B00]">
@@ -729,7 +725,6 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
           <div className="max-w-7xl mx-auto px-6">
             
             <div className="text-center max-w-2xl mx-auto space-y-3 mb-16">
-              <span className="text-xs font-mono font-black text-[#FF7A00] uppercase tracking-widest block font-extrabold">SIMULATION D'INTEGRATION EN DIRECT</span>
               <h2 className="text-3xl md:text-4xl font-black text-[#0B1F3A]">Tester nos consoles d'administration unifiées</h2>
               <p className="text-sm text-[#0B1F3A]/60 font-semibold leading-relaxed">
                 Naviguez ci-dessous entre les démonstrateurs d'administration des différents pôles pour constater le SSO unifié.
