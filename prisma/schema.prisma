@@ -1,0 +1,268 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+// ========================================================
+// 1. ORGANIZATIONS (multi-tenant logical database isolation)
+// ========================================================
+model Organization {
+  id            String   @id @default(uuid())
+  name          String   @unique
+  databaseName  String   @map("database_name")
+  region        String
+  securityLevel String   @map("security_level") // RSA-4096, HMAC-256, etc.
+  autoBackups   Boolean  @default(true) @map("auto_backups")
+  createdAt     DateTime @default(now()) @map("created_at")
+  updatedAt     DateTime @updatedAt @map("updated_at")
+
+  // Database Relationships
+  users         User[]
+  subscriptions Subscription[]
+  invoices      Invoice[]
+  activityLogs  ActivityLog[]
+  apiKeys       ApiKey[]
+  settings      Setting?
+  notifications Notification[]
+  applications  LicensedApplication[]
+
+  @@map("organizations")
+}
+
+// ========================================================
+// 2. USERS (federated identity directory with MFA)
+// ========================================================
+model User {
+  id             String   @id @default(uuid())
+  email          String   @unique
+  name           String
+  passwordHash   String?  @map("password_hash")
+  role           String   @default("CTO Developer") // e.g., Global Owner, CTO Developer, Finance Admin
+  status         String   @default("actif")        // actif, invité, suspendu
+  mfaEnabled     Boolean  @default(false) @map("mfa_enabled")
+  lastLogin      String?  @map("last_login")       // Descriptive relative string or date
+  createdAt      DateTime @default(now()) @map("created_at")
+  updatedAt      DateTime @updatedAt @map("updated_at")
+
+  // Multi-Tenant context association
+  organizationId String   @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Granular authorization & auditable tracks
+  permissions    UserPermission[]
+  invoices       Invoice[]
+  activityLogs   ActivityLog[]
+  apiKeys        ApiKey[]
+  notifications  Notification[]
+
+  @@map("users")
+}
+
+// ========================================================
+// 3. SUBSCRIPTIONS (isolated billing levels & seat sizes)
+// ========================================================
+model Subscription {
+  id             String    @id @default(uuid())
+  plan           String    // "Starter Sandbox", "Business Suite", "Enterprise Premium"
+  price          Decimal   @db.Decimal(10, 2)
+  seatsMax       Int       @map("seats_max")
+  seatsUsed      Int       @default(1) @map("seats_used")
+  status         String    @default("active") // active, trialing, delinquent, terminated
+  startDate      DateTime  @default(now()) @map("start_date")
+  endDate        DateTime? @map("end_date")
+  createdAt      DateTime  @default(now()) @map("created_at")
+  updatedAt      DateTime  @updatedAt @map("updated_at")
+
+  // Organization connection
+  organizationId String    @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  // Invoices issued under this subscription plan
+  invoices       Invoice[]
+
+  @@map("subscriptions")
+}
+
+// ========================================================
+// 4. APPLICATIONS (federated service catalogs of GLABTECH)
+// ========================================================
+model Application {
+  id               String   @id // e.g., gtech-hotel, gtech-resto, gtech-erp, gtech-crm
+  name             String
+  description      String   @db.Text
+  category         String   // Custom, HRM, CRM, Finance
+  url              String
+  status           String   @default("online") // online, offline, performance_issue
+  version          String   @default("v1.0.0")
+  icon             String   @default("Layers")
+  ping             Int      @default(20)       // API latency metric in ms
+  activeUsers      Int      @default(0) @map("active_users")
+  apiRequestsToday Int      @default(0) @map("api_requests_today")
+  ssoConnected     Boolean  @default(true) @map("sso_connected")
+  ssoClientId      String   @map("sso_client_id")
+  ssoClientSecret  String   @map("sso_client_secret")
+  recordsCount     Int      @default(0) @map("records_count")
+  createdAt        DateTime @default(now()) @map("created_at")
+  updatedAt        DateTime @updatedAt @map("updated_at")
+
+  // Tenant license bindings
+  organizationsLicensed LicensedApplication[]
+  activityLogs          ActivityLog[]
+
+  @@map("applications")
+}
+
+// Junction table mapping organization application permissions (licensing engine)
+model LicensedApplication {
+  id             String       @id @default(uuid())
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  applicationId  String       @map("application_id")
+  application    Application  @relation(fields: [applicationId], references: [id], onDelete: Cascade)
+  licensedAt     DateTime     @default(now()) @map("licensed_at")
+
+  @@unique([organizationId, applicationId])
+  @@map("licensed_applications")
+}
+
+// ========================================================
+// 5. PERMISSIONS (fine-grained Access Control Lists - ACL)
+// ========================================================
+model Permission {
+  id          String   @id @default(uuid())
+  scope       String   @unique // e.g., "apps", "billing", "users", "settings"
+  description String?  @db.Text
+  createdAt   DateTime @default(now()) @map("created_at")
+
+  // Map back to users assigned with this specific permission
+  usersWithPermission UserPermission[]
+
+  @@map("permissions")
+}
+
+// Junction table mapping users to permissions (RBAC representation)
+model UserPermission {
+  id           String     @id @default(uuid())
+  userId       String     @map("user_id")
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  permissionId String     @map("permission_id")
+  permission   Permission @relation(fields: [permissionId], references: [id], onDelete: Cascade)
+  grantedAt    DateTime   @default(now()) @map("granted_at")
+
+  @@unique([userId, permissionId])
+  @@map("user_permissions")
+}
+
+// ========================================================
+// 6. NOTIFICATIONS (alerts, security events, updates)
+// ========================================================
+model Notification {
+  id             String        @id @default(uuid())
+  type           String        // e.g., "security", "warn", "info"
+  text           String        @db.Text
+  isRead         Boolean       @default(false) @map("is_read")
+  createdAt      DateTime      @default(now()) @map("created_at")
+
+  // Target routing options (global org or specific user)
+  organizationId String?       @map("organization_id")
+  organization   Organization? @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?       @map("user_id")
+  user           User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("notifications")
+}
+
+// ========================================================
+// 7. INVOICES (payment receipts linked to billing gateways)
+// ========================================================
+model Invoice {
+  id             String       @id @default(uuid())
+  date           DateTime     @default(now())
+  amount         Decimal      @db.Decimal(10, 2)
+  currency       String       @default("EUR")
+  plan           String       // Billing Plan split identifier
+  reference      String       @unique // e.g., stripe_sso_88b1f7e02ad6
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  // Payer Context
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  subscriptionId String?      @map("subscription_id")
+  subscription   Subscription? @relation(fields: [subscriptionId], references: [id], onDelete: SetNull)
+  userId         String?      @map("user_id")
+  user           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("invoices")
+}
+
+// ========================================================
+// 8. ACTIVITY LOGS (central system audit trace engine)
+// ========================================================
+model ActivityLog {
+  id             String       @id @default(uuid())
+  timestamp      DateTime     @default(now())
+  event          String       // e.g., "Rotation mensuelle des clés déchiffrement RSA active"
+  ip             String?      // Client network request address
+  status         String       @default("success") // success, warning, failed
+  details        String?      @db.Text
+  createdAt      DateTime     @default(now()) @map("created_at")
+
+  // Relationships
+  userId         String?      @map("user_id")
+  user           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  applicationId  String?      @map("application_id")
+  application    Application? @relation(fields: [applicationId], references: [id], onDelete: SetNull)
+
+  @@map("activity_logs")
+}
+
+// ========================================================
+// 9. API KEYS (bearer authorization tokens for integration)
+// ========================================================
+model ApiKey {
+  id             String       @id @default(uuid())
+  hash           String       @unique // SHA-256 secure hash to match against at validation
+  prefix         String       // e.g., gl_pk_live_
+  label          String       // Descriptive identifier e.g. "Integration CRM Latam"
+  scopes         String       @default("read") // comma or space separated scopes strings
+  active         Boolean      @default(true)
+  expiresAt      DateTime?    @map("expires_at")
+  createdAt      DateTime     @default(now()) @map("created_at")
+  updatedAt      DateTime     @updatedAt @map("updated_at")
+
+  // Key Ownership
+  organizationId String       @map("organization_id")
+  organization   Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+  userId         String?      @map("user_id")
+  user           User?        @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@map("api_keys")
+}
+
+// ========================================================
+// 10. SETTINGS (custom tenant policies and enforcement rules)
+// ========================================================
+model Setting {
+  id                    String       @id @default(uuid())
+  mfaEnforced           Boolean      @default(false) @map("mfa_enforced")
+  jwtExpiration         Int          @default(3600) @map("jwt_expiration") // JWT lifetime in seconds
+  ssoDomainRestriction String?      @map("sso_domain_restriction") // Authorized SSO emails domains
+  allowGuestAccess      Boolean      @default(false) @map("allow_guest_access")
+  createdAt             DateTime     @default(now()) @map("created_at")
+  updatedAt             DateTime     @updatedAt @map("updated_at")
+
+  // Single active configuration per Organization
+  organizationId        String       @unique @map("organization_id")
+  organization          Organization @relation(fields: [organizationId], references: [id], onDelete: Cascade)
+
+  @@map("settings")
+}

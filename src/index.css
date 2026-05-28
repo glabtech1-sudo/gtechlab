@@ -1,0 +1,132 @@
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@200;300;400;500;600;700;800&family=Fira+Code:wght@400;500&display=swap');
+@import "tailwindcss";
+
+@theme {
+  --font-sans: "Inter", "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Fira Code", ui-monospace, SFMono-Regular, monospace;
+  
+  --color-brand-blue: #0B1F3A;
+  --color-brand-orange: #FF7A00;
+  --color-brand-gray: #F5F7FA;
+  
+  --shadow-premium: 0 4px 30px rgba(11, 31, 58, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+  --shadow-premium-hover: 0 12px 40px rgba(11, 31, 58, 0.08), 0 2px 8px rgba(255, 122, 0, 0.04);
+  --shadow-orange-glow: 0 0 20px rgba(255, 122, 0, 0.15);
+  
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-glow: glow 2s ease-in-out infinite;
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@keyframes glow {
+  0%, 100% { opacity: 0.8; }
+  50% { opacity: 1; filter: drop-shadow(0 0 8px rgba(255, 122, 0, 0.6)); }
+}
+
+/* Custom Scrollbar 10px highly visible with top/bottom decorative dots */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+::-webkit-scrollbar-track {
+  background: rgba(11, 31, 58, 0.05);
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(11, 31, 58, 0.3);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #FF7A00;
+}
+
+/* Dots at the top and bottom of the vertical scrollbar */
+::-webkit-scrollbar-button:vertical:start:decrement {
+  display: block;
+  height: 10px;
+  background: radial-gradient(circle at center, #FF7A00 4px, transparent 4.5px);
+}
+::-webkit-scrollbar-button:vertical:end:increment {
+  display: block;
+  height: 10px;
+  background: radial-gradient(circle at center, #FF7A00 4px, transparent 4.5px);
+}
+
+/* Dots at start and end of horizontal scrollbar */
+::-webkit-scrollbar-button:horizontal:start:decrement {
+  display: block;
+  width: 10px;
+  background: radial-gradient(circle at center, #FF7A00 4px, transparent 4.5px);
+}
+::-webkit-scrollbar-button:horizontal:end:increment {
+  display: block;
+  width: 10px;
+  background: radial-gradient(circle at center, #FF7A00 4px, transparent 4.5px);
+}
+
+/* Hide auxiliary webkit buttons */
+::-webkit-scrollbar-button:vertical:start:increment,
+::-webkit-scrollbar-button:vertical:end:decrement,
+::-webkit-scrollbar-button:horizontal:start:increment,
+::-webkit-scrollbar-button:horizontal:end:decrement {
+  display: none;
+}
+
+/* Specific dark container scrollbars for Sidebar and Copilot Drawer */
+aside ::-webkit-scrollbar-track,
+.dark-scroll-container ::-webkit-scrollbar-track {
+  background: rgba(255, 255, 255, 0.04);
+}
+aside ::-webkit-scrollbar-thumb,
+.dark-scroll-container ::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.18);
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+aside ::-webkit-scrollbar-thumb:hover,
+.dark-scroll-container ::-webkit-scrollbar-thumb:hover {
+  background: #FF7A00;
+  border: 2px solid transparent;
+  background-clip: padding-box;
+}
+
+/* Custom glowing effects */
+.glow-card {
+  position: relative;
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
+}
+.glow-card::after {
+  content: '';
+  position: absolute;
+  inset: -1px;
+  border-radius: inherit;
+  background: linear-gradient(135deg, rgba(255, 122, 0, 0.2), rgba(11, 31, 58, 0.02), rgba(255, 122, 0, 0.05));
+  z-index: -1;
+  opacity: 0;
+  transition: opacity 0.4s ease;
+}
+.glow-card:hover::after {
+  opacity: 1;
+}
+
+/* Glassmorphism utility */
+.glass-panel {
+  background: rgba(255, 255, 255, 0.7);
+  backdrop-filter: blur(16px) saturate(120%);
+  border: 1px solid rgba(11, 31, 58, 0.06);
+}
+
+.dark-glass-panel {
+  background: rgba(11, 31, 58, 0.94);
+  backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.premium-gradient-bg {
+  background: radial-gradient(circle at top right, rgba(255, 122, 0, 0.06), transparent 400px),
+              radial-gradient(circle at bottom left, rgba(11, 31, 58, 0.03), transparent 300px);
+}
+
