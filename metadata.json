@@ -1,7 +1,9 @@
 {
   "name": "glabtech",
   "description": "Portail SaaS central intelligent multi-applications de gestion d'entreprise, sécurisé, responsive et piloté par IA.",
-  "requestFramePermissions": [],
+  "requestFramePermissions": [
+    "camera"
+  ],
   "majorCapabilities": [
     "MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"
   ]

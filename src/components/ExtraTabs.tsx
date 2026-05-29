@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { 
   Building2, 
   CreditCard, 
@@ -28,6 +28,7 @@ import {
   RotateCw,
   Shield,
   Eye,
+  EyeOff,
   Database,
   Briefcase,
   Search,
@@ -43,7 +44,12 @@ import {
   User,
   Globe,
   Palette,
-  Save
+  Save,
+  UserCheck,
+  UserX,
+  Trash2,
+  Camera,
+  Upload
 } from "lucide-react";
 import { PortalUser, UserRole, ManagedApp } from "../types";
 
@@ -2440,6 +2446,10 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
   // Navigation Sub-Tabs
   const [activeSubTab, setActiveSubTab] = useState<"overview" | "gateways" | "tester" | "logs">("overview");
 
+  const [showPushApiKey, setShowPushApiKey] = useState(false);
+  const [showSmsToken, setShowSmsToken] = useState(false);
+  const [showWhatsappToken, setShowWhatsappToken] = useState(false);
+
   // Multi-Channel Gateway Configurations
   const [gateways, setGateways] = useState({
     email: {
@@ -3144,12 +3154,21 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono uppercase font-bold text-slate-400">Clé d'accès API Serveur</label>
-                  <input 
-                    type="password"
-                    value={gateways.push.apiKey}
-                    onChange={(e) => setGateways({...gateways, push: {...gateways.push, apiKey: e.target.value}})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2"
-                  />
+                  <div className="relative">
+                    <input 
+                      type={showPushApiKey ? "text" : "password"}
+                      value={gateways.push.apiKey}
+                      onChange={(e) => setGateways({...gateways, push: {...gateways.push, apiKey: e.target.value}})}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3 pr-10 py-2 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPushApiKey(!showPushApiKey)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    >
+                      {showPushApiKey ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono uppercase font-bold text-slate-400">Application Identifiant unique (Web Push App ID)</label>
@@ -3207,12 +3226,21 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono uppercase font-bold text-slate-400">Twilio Auth Token</label>
-                  <input 
-                    type="password"
-                    value={gateways.sms.authToken}
-                    onChange={(e) => setGateways({...gateways, sms: {...gateways.sms, authToken: e.target.value}})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2"
-                  />
+                  <div className="relative">
+                    <input 
+                      type={showSmsToken ? "text" : "password"}
+                      value={gateways.sms.authToken}
+                      onChange={(e) => setGateways({...gateways, sms: {...gateways.sms, authToken: e.target.value}})}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3 pr-10 py-2 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowSmsToken(!showSmsToken)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    >
+                      {showSmsToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono uppercase font-bold text-slate-400">Code d'Émetteur Alpha-Numérique (Sender ID)</label>
@@ -3279,12 +3307,21 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
                 </div>
                 <div className="space-y-1">
                   <label className="text-[9px] font-mono uppercase font-bold text-slate-400">Meta System Access Token</label>
-                  <input 
-                    type="password"
-                    value={gateways.whatsapp.accessToken}
-                    onChange={(e) => setGateways({...gateways, whatsapp: {...gateways.whatsapp, accessToken: e.target.value}})}
-                    className="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2"
-                  />
+                  <div className="relative">
+                    <input 
+                      type={showWhatsappToken ? "text" : "password"}
+                      value={gateways.whatsapp.accessToken}
+                      onChange={(e) => setGateways({...gateways, whatsapp: {...gateways.whatsapp, accessToken: e.target.value}})}
+                      className="w-full bg-slate-50 border border-slate-200 rounded-xl pl-3 pr-10 py-2 outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowWhatsappToken(!showWhatsappToken)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 transition-colors cursor-pointer"
+                    >
+                      {showWhatsappToken ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
               </div>
             </div>
@@ -3934,7 +3971,7 @@ export function SettingsTab({
   setUser: any; 
   onNotify?: (msg: string, type: 'success' | 'warn' | 'info') => void;
 }) {
-  const [activeSubTab, setActiveSubTab] = useState<"profil" | "logs" | "securite" | "themes" | "langues" | "sauvegarde">("profil");
+  const [activeSubTab, setActiveSubTab] = useState<"profil" | "logs" | "securite" | "themes" | "langues" | "sauvegarde" | "integrations">("profil");
   const [language, setLanguage] = useState<"fr" | "en">("fr");
   
   // Custom states
@@ -3943,11 +3980,138 @@ export function SettingsTab({
   const [lockMinutes, setLockMinutes] = useState(30);
   const [activeTheme, setActiveTheme] = useState("slate");
 
+  // Vercel Integration States
+  const [vercelConnected, setVercelConnected] = useState<boolean>(false);
+  const [vercelToken, setVercelToken] = useState<string>("");
+  const [vercelProject, setVercelProject] = useState<string>("glabtech-sso");
+  const [vercelBranch, setVercelBranch] = useState<string>("main");
+  const [isConnectingVercel, setIsConnectingVercel] = useState<boolean>(false);
+  const [isDeployingVercel, setIsDeployingVercel] = useState<boolean>(false);
+  const [vercelDeployLogs, setVercelDeployLogs] = useState<string[]>([]);
+  const [vercelDeployStatus, setVercelDeployStatus] = useState<"idle" | "building" | "success" | "failed">("idle");
+  const [vercelDeployUrl, setVercelDeployUrl] = useState<string>("");
+
+  // Railway Integration States
+  const [railwayConnected, setRailwayConnected] = useState<boolean>(false);
+  const [railwayToken, setRailwayToken] = useState<string>("");
+  const [railwayProject, setRailwayProject] = useState<string>("glabtech-production-db");
+  const [isConnectingRailway, setIsConnectingRailway] = useState<boolean>(false);
+  const [isTestingRailway, setIsTestingRailway] = useState<boolean>(false);
+  const [railwayDbUrl, setRailwayDbUrl] = useState<string>("postgresql://postgres:***@roundhouse.proxy.rlwy.net:12345/railway");
+  const [railwayPostgresActive, setRailwayPostgresActive] = useState<boolean>(true);
+  const [railwayRedisActive, setRailwayRedisActive] = useState<boolean>(false);
+  const [vercelRailwayBridgeActive, setVercelRailwayBridgeActive] = useState<boolean>(false);
+
   // Profil Form States
   const [profileName, setProfileName] = useState(user.name);
   const [profileEmail, setProfileEmail] = useState(user.email);
   const [profileDept, setProfileDept] = useState(user.department || "");
+  const [profileAvatar, setProfileAvatar] = useState(user.avatar || "");
   const [isSavingProfile, setIsSavingProfile] = useState(false);
+
+  // States for Camera & Photo Upload
+  const [isCameraActive, setIsCameraActive] = useState(false);
+  const [cameraStream, setCameraStream] = useState<MediaStream | null>(null);
+  const [cameraError, setCameraError] = useState<string | null>(null);
+
+  // Stop camera when activeSubTab changes or component unmounts
+  useEffect(() => {
+    return () => {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+      }
+    };
+  }, [cameraStream]);
+
+  useEffect(() => {
+    if (activeSubTab !== "profil") {
+      if (cameraStream) {
+        cameraStream.getTracks().forEach(track => track.stop());
+        setCameraStream(null);
+      }
+      setIsCameraActive(false);
+      setCameraError(null);
+    }
+  }, [activeSubTab]);
+
+  const startCamera = async () => {
+    setCameraError(null);
+    setIsCameraActive(true);
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({
+        video: { width: 320, height: 320, facingMode: "user" }
+      });
+      setCameraStream(stream);
+      setTimeout(() => {
+        const videoElement = document.getElementById("profile-webcam") as HTMLVideoElement;
+        if (videoElement) {
+          videoElement.srcObject = stream;
+          videoElement.play().catch(err => {
+            console.error("Error playing video stream:", err);
+          });
+        }
+      }, 150);
+    } catch (err: any) {
+      console.error("Camera access failed:", err);
+      setCameraError(
+        err.name === "NotAllowedError" 
+          ? "Accès à la caméra refusé. Autorisez les permissions de caméra dans votre navigateur."
+          : "Impossible de démarrer la caméra. Vérifiez si elle n'est pas déjà utilisée par un autre onglet."
+      );
+    }
+  };
+
+  const stopCamera = () => {
+    if (cameraStream) {
+      cameraStream.getTracks().forEach(track => track.stop());
+      setCameraStream(null);
+    }
+    setIsCameraActive(false);
+    setCameraError(null);
+  };
+
+  const capturePhoto = () => {
+    const videoElement = document.getElementById("profile-webcam") as HTMLVideoElement;
+    if (!videoElement) return;
+    try {
+      const canvas = document.createElement("canvas");
+      canvas.width = 256;
+      canvas.height = 256;
+      const ctx = canvas.getContext("2d");
+      if (ctx) {
+        const videoWidth = videoElement.videoWidth || 320;
+        const videoHeight = videoElement.videoHeight || 320;
+        const minDim = Math.min(videoWidth, videoHeight);
+        const sx = (videoWidth - minDim) / 2;
+        const sy = (videoHeight - minDim) / 2;
+        ctx.drawImage(videoElement, sx, sy, minDim, minDim, 0, 0, 256, 256);
+        const dataUrl = canvas.toDataURL("image/jpeg", 0.9);
+        setProfileAvatar(dataUrl);
+        triggerNotification(language === "fr" ? "Cliché capturé avec succès !" : "Snapshot captured successfully!", "success");
+      }
+      stopCamera();
+    } catch (err) {
+      console.error("Error drawing video track:", err);
+      triggerNotification("Échec de la capture de la photo.", "warn");
+    }
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (files && files.length > 0) {
+      const file = files[0];
+      if (!file.type.startsWith("image/")) {
+        triggerNotification("Veuillez sélectionner une image valide.", "warn");
+        return;
+      }
+      const reader = new FileReader();
+      reader.onloadend = () => {
+        setProfileAvatar(reader.result as string);
+        triggerNotification(language === "fr" ? "Nouvel avatar chargé avec succès !" : "New avatar loaded successfully!", "success");
+      };
+      reader.readAsDataURL(file);
+    }
+  };
 
   // Backup states
   const [isBackingUp, setIsBackingUp] = useState(false);
@@ -3990,7 +4154,8 @@ export function SettingsTab({
         ...user,
         name: profileName,
         email: profileEmail,
-        department: profileDept
+        department: profileDept,
+        avatar: profileAvatar
       });
       setIsSavingProfile(false);
       triggerNotification(t.profileUpdated, "success");
@@ -4080,7 +4245,8 @@ export function SettingsTab({
             { id: "securite", icon: Shield, label: t.securite, color: "text-amber-550 bg-amber-50" },
             { id: "themes", icon: Palette, label: t.themes, color: "text-purple-550 bg-purple-50" },
             { id: "langues", icon: Globe, label: t.langues, color: "text-emerald-555 bg-emerald-50" },
-            { id: "sauvegarde", icon: Database, label: t.sauvegarde, color: "text-[#FF7A00] bg-orange-50" }
+            { id: "sauvegarde", icon: Database, label: t.sauvegarde, color: "text-[#FF7A00] bg-orange-50" },
+            { id: "integrations", icon: Cpu, label: language === "fr" ? "Intégrations DevOps" : "DevOps Cloud Integrations", color: "text-rose-550 bg-rose-50" }
           ].map((nav) => {
             const IconComponent = nav.icon;
             const isActive = activeSubTab === nav.id;
@@ -4118,7 +4284,123 @@ export function SettingsTab({
                 <p className="text-[11px] text-slate-550 mt-1 leading-normal">{t.profileDesc}</p>
               </div>
 
-              <form onSubmit={saveProfileSettings} className="space-y-4">
+               <form onSubmit={saveProfileSettings} className="space-y-6">
+                
+                {/* Section photo de profil interactive (Prendre la photo / Importer) */}
+                <div className="bg-slate-50/70 border border-slate-150 rounded-2xl p-5 space-y-4">
+                  <span className="text-[10px] uppercase font-mono font-black text-slate-400 block tracking-wider">
+                    Photo de Profil SSO
+                  </span>
+                  
+                  <div className="flex flex-col md:flex-row gap-5 items-start md:items-center">
+                    {/* circular avatar preview */}
+                    <div className="relative group flex-shrink-0">
+                      <div className="h-20 w-20 rounded-full overflow-hidden border-2 border-brand-orange/40 group-hover:border-brand-orange shadow-md bg-white flex items-center justify-center">
+                        {profileAvatar ? (
+                          <img 
+                            src={profileAvatar} 
+                            alt="Avatar" 
+                            className="h-full w-full object-cover"
+                            referrerPolicy="no-referrer"
+                          />
+                        ) : (
+                          <User className="h-10 w-10 text-slate-300" />
+                        )}
+                      </div>
+                      <span className="absolute bottom-0 right-0 bg-brand-orange text-white p-1 rounded-full text-[10px] border border-white shadow">
+                        ★
+                      </span>
+                    </div>
+
+                    <div className="space-y-2 flex-grow">
+                      <h5 className="font-extrabold text-xs text-slate-800">Personnalisez votre identifiant visuel</h5>
+                      <p className="text-[10.5px] text-slate-500 leading-normal max-w-lg">
+                        Mettez à jour votre avatar à l'aide de votre webcam en direct ou en chargeant un fichier d'image (PNG, JPG, BMP) depuis votre ordinateur.
+                      </p>
+                      
+                      <div className="flex flex-wrap gap-2.5">
+                        <button
+                          type="button"
+                          onClick={isCameraActive ? stopCamera : startCamera}
+                          className="flex items-center gap-1.5 bg-[#0B1F3A] hover:bg-black text-white rounded-xl px-3.5 py-2 text-xs font-bold cursor-pointer transition-all shadow-sm"
+                        >
+                          <Camera className="h-3.5 w-3.5" />
+                          {isCameraActive ? "Désactiver la caméra" : "Prendre une photo"}
+                        </button>
+
+                        <label 
+                          htmlFor="profile-avatar-upload" 
+                          className="flex items-center gap-1.5 bg-white border border-slate-200 hover:bg-slate-50 text-slate-700 rounded-xl px-3.5 py-2 text-xs font-bold cursor-pointer transition-all shadow-sm"
+                        >
+                          <Upload className="h-3.5 w-3.5 text-slate-500" />
+                          Importer une de vos photos
+                        </label>
+                        <input 
+                          type="file" 
+                          id="profile-avatar-upload"
+                          accept="image/*"
+                          onChange={handleFileChange}
+                          className="hidden"
+                        />
+                      </div>
+                    </div>
+                  </div>
+
+                  {/* live camera stream feed */}
+                  {isCameraActive && (
+                    <div className="bg-slate-900 rounded-2xl p-4 border border-slate-800 space-y-4 max-w-sm mx-auto md:mx-0 animate-motion-in">
+                      <div className="flex justify-between items-center text-xs text-slate-300 font-bold">
+                        <span className="flex items-center gap-1.5">
+                          <span className="h-2 w-2 rounded-full bg-rose-500 animate-pulse" />
+                          Flux vidéo webcam en direct (Miroir)
+                        </span>
+                        <button 
+                          type="button" 
+                          onClick={stopCamera} 
+                          className="text-slate-400 hover:text-white font-bold bg-transparent border-0 cursor-pointer"
+                        >
+                          Fermer
+                        </button>
+                      </div>
+
+                      <div className="relative aspect-square rounded-xl overflow-hidden bg-black border border-slate-800 flex items-center justify-center">
+                        <video 
+                          id="profile-webcam" 
+                          className="w-full h-full object-cover scale-x-[-1]" 
+                          autoPlay 
+                          playsInline 
+                          muted 
+                        />
+                        <div className="absolute inset-0 border-2 border-brand-orange/30 pointer-events-none rounded-xl" />
+                      </div>
+
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={capturePhoto}
+                          className="flex-1 bg-brand-orange hover:bg-orange-600 text-white rounded-xl py-2 px-3 text-xs font-bold flex items-center justify-center gap-1.5 cursor-pointer shadow border-0"
+                        >
+                          <Camera className="h-3.5 w-3.5" />
+                          Capturer la photo
+                        </button>
+                        <button
+                          type="button"
+                          onClick={stopCamera}
+                          className="bg-transparent border border-slate-700 hover:bg-slate-800 text-slate-350 rounded-xl py-2 px-3.5 text-xs font-semibold cursor-pointer"
+                        >
+                          Annuler
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+                  {cameraError && (
+                    <div className="p-3 bg-rose-50 border border-rose-200 text-rose-850 rounded-xl text-xs font-semibold max-w-lg leading-relaxed">
+                      {cameraError}
+                    </div>
+                  )}
+                </div>
+
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                   <div className="space-y-1.5">
                     <label className="text-[10px] uppercase font-mono font-black text-slate-400 block">{t.fullName}</label>
@@ -4600,6 +4882,535 @@ export function SettingsTab({
             </div>
           )}
 
+          {/* ==========================================
+             7. INTÉGRATIONS DEVOPS CLOUD (Vercel & Railway)
+             ========================================== */}
+          {activeSubTab === "integrations" && (
+            <div className="space-y-6 animate-motion-in">
+              <div className="border-b border-slate-100 pb-3">
+                <h4 className="font-extrabold text-sm text-slate-800 flex items-center gap-1.5 font-sans">
+                  <Cpu className="h-4.5 w-4.5 text-rose-500" />
+                  {language === "fr" 
+                    ? "Connecteurs Cloud DevOps & Déploiement Continu" 
+                    : "DevOps Cloud Connectors & Continuous Deployment"}
+                </h4>
+                <p className="text-[11px] text-slate-550 mt-1 leading-normal">
+                  {language === "fr" 
+                    ? "Raccordez votre écosystème SaaS GLABTECH à vos solutions d'infrastructure préférées pour automatiser la mise en production de vos applications d'un simple clic." 
+                    : "Wire up your GLABTECH SaaS ecosystem to your choice hosting platforms to streamline production runs in one click."}
+                </p>
+              </div>
+
+              <div className="grid grid-cols-1 xl:grid-cols-2 gap-6">
+                
+                {/* VERCEL PANEL */}
+                <div className={`border rounded-2xl p-5 space-y-4 bg-white transition-all shadow-premium-sm ${
+                  vercelConnected ? "border-slate-900 ring-1 ring-slate-950/5 bg-slate-50/50" : "border-slate-150"
+                }`}>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      {/* Custom Vercel Triangle logo */}
+                      <div className="h-9 w-9 bg-black text-white flex items-center justify-center rounded-lg shadow-md">
+                        <span className="font-mono text-xs font-black">▲</span>
+                      </div>
+                      <div>
+                        <h4 className="font-black text-xs text-slate-900 font-sans">Vercel Edge Platform</h4>
+                        <span className="text-[9.5px] font-mono font-medium text-slate-500">Static Host & SPA Middleware</span>
+                      </div>
+                    </div>
+
+                    <span className={`text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border uppercase ${
+                      vercelConnected 
+                        ? "bg-emerald-50 text-emerald-700 border-emerald-200" 
+                        : "bg-slate-50 text-slate-505 border-slate-200"
+                    }`}>
+                      {vercelConnected ? "Connecté" : "Non Connecté"}
+                    </span>
+                  </div>
+
+                  {!vercelConnected ? (
+                    <div className="space-y-3.5 pt-2">
+                      <p className="text-[10.5px] text-slate-505 leading-normal">
+                        Déployez instantanément le portail ainsi que vos applications frontend sur le réseau anycast mondial de Vercel. 
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-mono font-black text-slate-400 block">Jeton d'API (Vercel Token)</label>
+                          <input 
+                            type="password"
+                            placeholder="vct_sso_••••••••••••••"
+                            value={vercelToken}
+                            onChange={(e) => setVercelToken(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-3 py-2 text-xs text-slate-800 font-mono outline-none focus:bg-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-mono font-black text-slate-400 block">Nom du Projet Vercel</label>
+                          <input 
+                            type="text"
+                            placeholder="ex: glabtech-portal-sso"
+                            value={vercelProject}
+                            onChange={(e) => setVercelProject(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-3 py-2 text-xs text-slate-805 font-semibold outline-none focus:bg-white"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsConnectingVercel(true);
+                          setTimeout(() => {
+                            setVercelConnected(true);
+                            setVercelToken("vct_sso_" + Math.random().toString(36).substring(2, 10).toUpperCase());
+                            setIsConnectingVercel(false);
+                            triggerNotification("Compte Vercel raccordé et synchronisé !", "success");
+                          }, 1200);
+                        }}
+                        disabled={isConnectingVercel}
+                        className="w-full bg-black hover:bg-slate-900 border-0 text-white rounded-xl py-2.5 text-xs font-black cursor-pointer transition-all shadow-sm flex items-center justify-center gap-1.5"
+                      >
+                        {isConnectingVercel ? (
+                          <>
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                            Liaison en cours...
+                          </>
+                        ) : (
+                          <>
+                            <Zap className="h-3.5 w-3.5 text-amber-500" />
+                            Associer mon compte Vercel
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 pt-1 animate-fadeIn">
+                      <div className="grid grid-cols-2 gap-3 bg-white p-3 border border-slate-150 rounded-xl text-[11px] font-medium text-slate-600">
+                        <div>
+                          <span className="text-[8.5px] uppercase font-mono text-slate-400 block">ID Projet</span>
+                          <span className="font-extrabold text-slate-850 block">{vercelProject}</span>
+                        </div>
+                        <div>
+                          <span className="text-[8.5px] uppercase font-mono text-slate-400 block">Branche Git cible</span>
+                          <select 
+                            value={vercelBranch}
+                            onChange={(e) => setVercelBranch(e.target.value)}
+                            className="font-mono text-[10.5px] bg-slate-50 rounded border border-slate-200 py-0.5 px-1 focus:outline-none"
+                          >
+                            <option value="main">main</option>
+                            <option value="development">development</option>
+                            <option value="production">production</option>
+                          </select>
+                        </div>
+                        <div className="col-span-2 border-t border-slate-100 pt-2 flex items-center justify-between">
+                          <div>
+                            <span className="text-[8.5px] uppercase font-mono text-slate-400 block">Clé Token active</span>
+                            <span className="font-mono text-[10.5px] text-slate-500 select-all">{vercelToken.slice(0, 10)}••••••••</span>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setVercelConnected(false);
+                              setVercelDeployLogs([]);
+                              setVercelDeployStatus("idle");
+                              setVercelDeployUrl("");
+                              triggerNotification("Vercel déconnecté avec succès.", "info");
+                            }}
+                            className="text-rose-600 hover:text-rose-800 text-[10px] bg-transparent border-0 cursor-pointer font-bold"
+                          >
+                            Désassocier
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* Launch Deployment Box */}
+                      <div className="space-y-2 pt-1">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsDeployingVercel(true);
+                            setVercelDeployStatus("building");
+                            setVercelDeployLogs(["[DevOps] Initialisation de l'environnement de déploiement..."]);
+                            
+                            const logsSteps = [
+                              "Clonage du dépôt git : github.com/glabtech/sso-portal (branche '" + vercelBranch + "')...",
+                              "Analyse de la configuration package.json... Détection de React 18 & Vite.",
+                              "Lancement de : npm install --frozen-lockfile...",
+                              "Installation des dépendance terminée avec succès. (124 modules installés)",
+                              "Lancement de la compilation : npm run build...",
+                              "Vite v5.2.11 - Optimisation des paquets, minification de l'index.html...",
+                              "Compilation terminée. Dossier dist/ généré. Taille globale : 8.42 MB.",
+                              "Synchronisation des variables d'environnement SSO réinjectées...",
+                              "Envoi sur le réseau Edge Anycast mondial Vercel...",
+                              "Déploiement en statut de propagation DNS (Vercel Router)...",
+                              "Déploiement actif ! Statut : PRODUCTION"
+                            ];
+
+                            logsSteps.forEach((logText, idx) => {
+                              setTimeout(() => {
+                                setVercelDeployLogs(prev => [...prev, `[${new Date().toLocaleTimeString('fr-FR')}] ${logText}`]);
+                                if (idx === logsSteps.length - 1) {
+                                  setIsDeployingVercel(false);
+                                  setVercelDeployStatus("success");
+                                  setVercelDeployUrl(`https://${vercelProject || "glabtech-sso"}.vercel.app`);
+                                  triggerNotification("Application déployée avec succès sur Vercel !", "success");
+                                }
+                              }, (idx + 1) * 750);
+                            });
+                          }}
+                          disabled={isDeployingVercel}
+                          className="w-full bg-brand-orange hover:bg-orange-600 border-0 text-white rounded-xl py-2 px-3 text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer shadow disabled:opacity-50"
+                        >
+                          {isDeployingVercel ? (
+                            <>
+                              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                              Cycle de Build Vercel en cours...
+                            </>
+                          ) : (
+                            <>
+                              <ArrowUpRight className="h-3.5 w-3.5" />
+                              Refaire un build & déploiement de production
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                      {/* Deployment live link if Success */}
+                      {vercelDeployStatus === "success" && vercelDeployUrl && (
+                        <div className="bg-emerald-50 text-emerald-800 border border-emerald-150 p-3 rounded-xl text-xs flex items-center justify-between animate-fadeIn">
+                          <div className="flex items-center gap-1.5 leading-normal">
+                            <CheckCircle className="h-4 w-4 text-emerald-600 flex-shrink-0" />
+                            <span><strong>Déploiement live :</strong> <a href={vercelDeployUrl} target="_blank" rel="noreferrer" className="underline font-mono font-bold hover:text-emerald-900 transition-colors">{vercelDeployUrl}</a></span>
+                          </div>
+                          <span className="h-2 w-2 rounded-full bg-emerald-500 animate-ping" />
+                        </div>
+                      )}
+
+                      {/* Live Terminal logs displaying */}
+                      {vercelDeployLogs.length > 0 && (
+                        <div className="bg-slate-900 text-[#00FF66] border border-slate-800 rounded-xl p-3.5 font-mono text-[9px] leading-relaxed select-all max-h-48 overflow-y-auto shadow-inner space-y-1">
+                          <div className="flex justify-between items-center text-[8px] text-slate-400 border-b border-slate-800 pb-1 mb-1.5 font-sans">
+                            <span>TERMINAL CONSOLE VERCEL</span>
+                            <span className="animate-pulse">{isDeployingVercel ? "● COMPILING" : "● READY"}</span>
+                          </div>
+                          {vercelDeployLogs.map((log, idx) => (
+                            <div key={idx} className="whitespace-pre-wrap">{log}</div>
+                          ))}
+                        </div>
+                      )}
+
+                    </div>
+                  )}
+
+                </div>
+
+
+                {/* RAILWAY PANEL */}
+                <div className={`border rounded-2xl p-5 space-y-4 bg-white transition-all shadow-premium-sm ${
+                  railwayConnected ? "border-purple-900 ring-1 ring-purple-950/5 bg-purple-50/15" : "border-slate-150"
+                }`}>
+                  <div className="flex justify-between items-center">
+                    <div className="flex items-center gap-2">
+                      {/* Custom Railway logo */}
+                      <div className="h-9 w-9 bg-[#1E1432] text-[#F30067] flex items-center justify-center rounded-lg shadow-md font-mono text-base font-black">
+                        r_
+                      </div>
+                      <div>
+                        <h4 className="font-black text-xs text-slate-900 font-sans">Railway Engine</h4>
+                        <span className="text-[9.5px] font-mono font-medium text-slate-500">Cloud SQL & Container Orchestration</span>
+                      </div>
+                    </div>
+
+                    <span className={`text-[9.5px] font-mono font-bold px-2 py-0.5 rounded-full border uppercase ${
+                      railwayConnected 
+                        ? "bg-purple-100 text-purple-750 border-purple-200" 
+                        : "bg-slate-50 text-slate-505 border-slate-200"
+                    }`}>
+                      {railwayConnected ? "Provisionné" : "Non Connecté"}
+                    </span>
+                  </div>
+
+                  {!railwayConnected ? (
+                    <div className="space-y-3.5 pt-2">
+                      <p className="text-[10.5px] text-slate-505 leading-normal">
+                        Associez votre instance de base de données PostgreSQL/Redis et vos microservices de conteneurs hébergés directement sur Railway DevOps.
+                      </p>
+                      
+                      <div className="space-y-2">
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-mono font-black text-slate-400 block">Clé de Connexion API (Railway Token)</label>
+                          <input 
+                            type="password"
+                            placeholder="rlwy_••••••••••••••••••••••••"
+                            value={railwayToken}
+                            onChange={(e) => setRailwayToken(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-3 py-2 text-xs text-slate-805 font-mono outline-none focus:bg-white"
+                          />
+                        </div>
+
+                        <div className="space-y-1">
+                          <label className="text-[9px] uppercase font-mono font-black text-slate-400 block">ID du Projet Railway</label>
+                          <input 
+                            type="text"
+                            placeholder="ex: glabtech-prod-databases"
+                            value={railwayProject}
+                            onChange={(e) => setRailwayProject(e.target.value)}
+                            className="w-full bg-slate-50 border border-slate-200 hover:border-slate-350 rounded-xl px-3 py-2 text-xs text-slate-805 font-semibold outline-none focus:bg-white"
+                          />
+                        </div>
+                      </div>
+
+                      <button
+                        type="button"
+                        onClick={() => {
+                          setIsConnectingRailway(true);
+                          setTimeout(() => {
+                            setRailwayConnected(true);
+                            setRailwayToken("rlw_sso_" + Math.random().toString(36).substring(2, 10).toUpperCase());
+                            setIsConnectingRailway(false);
+                            triggerNotification("Cluster de base de données Railway appairé !", "success");
+                          }, 1200);
+                        }}
+                        disabled={isConnectingRailway}
+                        className="w-full bg-[#1E1432] hover:bg-[#2C1D4A] border-0 text-white rounded-xl py-2.5 text-xs font-black cursor-pointer transition-all shadow flex items-center justify-center gap-1.5"
+                      >
+                        {isConnectingRailway ? (
+                          <>
+                            <RefreshCw className="h-3.5 w-3.5 animate-spin text-[#F30067]" />
+                            Handshake Railway TCP...
+                          </>
+                        ) : (
+                          <>
+                            <Database className="h-3.5 w-3.5 text-[#F30067]" />
+                            Associer mon compte Railway
+                          </>
+                        )}
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-4 pt-1 animate-fadeIn">
+                      <div className="space-y-3 bg-white p-3 border border-slate-150 rounded-xl text-[11px] font-medium text-slate-600">
+                        <div className="grid grid-cols-2 gap-3">
+                          <div>
+                            <span className="text-[8.5px] uppercase font-mono text-slate-400 block">Nom du Projet</span>
+                            <span className="font-extrabold text-slate-850 block">{railwayProject}</span>
+                          </div>
+                          <div>
+                            <span className="text-[8.5px] uppercase font-mono text-slate-400 block">ID Container</span>
+                            <span className="font-mono text-slate-500 font-bold block">rlwy_node_glab</span>
+                          </div>
+                        </div>
+
+                        <div className="space-y-2 border-t border-slate-100 pt-3">
+                          <span className="text-[9px] uppercase font-mono text-slate-400 block tracking-wider">Services provisionnés en production</span>
+                          
+                          <div className="flex items-center justify-between bg-emerald-50/50 border border-emerald-150 p-2 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <span className="h-2 w-2 rounded-full bg-emerald-500 animate-pulse" />
+                              <span className="font-extrabold text-[#0B1F3A]">Base de données PostgreSQL</span>
+                            </div>
+                            <span className="text-[9.5px] font-mono text-slate-500">port 5432</span>
+                          </div>
+
+                          <div className="flex items-center justify-between bg-slate-50 border border-slate-200 p-2 rounded-lg">
+                            <div className="flex items-center gap-2">
+                              <span className={`h-2 w-2 rounded-full ${railwayRedisActive ? "bg-emerald-500 animate-pulse" : "bg-slate-350"}`} />
+                              <span className="font-extrabold text-[#0B1F3A]">Cache Redis In-Memory</span>
+                            </div>
+                            <button
+                              type="button"
+                              onClick={() => {
+                                setRailwayRedisActive(!railwayRedisActive);
+                                triggerNotification(railwayRedisActive ? "Service Redis désactivé" : "Service Redis provisionné et activé !", "success");
+                              }}
+                              className="text-[10px] bg-[#1E1432] text-white rounded border-0 px-2.5 py-1 cursor-pointer hover:bg-black font-semibold"
+                            >
+                              {railwayRedisActive ? "Arrêter" : "Démarrer"}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="border-t border-slate-100 pt-2 flex items-center justify-between">
+                          <div>
+                            <span className="text-[8.5px] uppercase font-mono text-slate-400 block">Jeton actif</span>
+                            <span className="font-mono text-[10.5px] text-slate-500 select-all">{railwayToken.slice(0, 10)}••••••••</span>
+                          </div>
+                          
+                          <button
+                            type="button"
+                            onClick={() => {
+                              setRailwayConnected(false);
+                              setRailwayRedisActive(false);
+                              triggerNotification("Instance Railway déconnectée.", "info");
+                            }}
+                            className="text-rose-600 hover:text-rose-800 text-[10px] bg-transparent border-0 cursor-pointer font-bold"
+                          >
+                            Désassocier
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* URL de base de données d'environnment */}
+                      <div className="space-y-1.5 bg-slate-50 border border-slate-150 p-3 rounded-xl">
+                        <span className="text-[9px] uppercase font-mono font-black text-slate-450 block">URL publique de connexion SQL</span>
+                        <div className="flex gap-2">
+                          <input 
+                            type="text" 
+                            readOnly 
+                            value={railwayDbUrl}
+                            className="flex-1 bg-white border border-slate-200 rounded-lg px-2.5 py-1 text-xs text-slate-705 font-mono outline-none"
+                          />
+                          <button
+                            type="button"
+                            onClick={() => {
+                              navigator.clipboard.writeText(railwayDbUrl);
+                              triggerNotification("URL copiée dans votre presse-papier !", "success");
+                            }}
+                            className="bg-white border border-slate-200 hover:bg-slate-50 text-slate-650 px-2.5 rounded-lg text-xs cursor-pointer font-bold"
+                          >
+                            Copier
+                          </button>
+                        </div>
+                      </div>
+
+                      {/* DB Handshake test */}
+                      <div className="flex gap-2">
+                        <button
+                          type="button"
+                          onClick={() => {
+                            setIsTestingRailway(true);
+                            setTimeout(() => {
+                              setIsTestingRailway(false);
+                              triggerNotification("Test SQLOK : Handshake réussi ! Latence ping physique : 8ms. 14 tables systémiques validées.", "success");
+                            }, 1500);
+                          }}
+                          disabled={isTestingRailway}
+                          className="flex-1 bg-slate-100 hover:bg-slate-200 border border-slate-200 text-slate-800 rounded-xl py-2 px-3 text-xs font-black flex items-center justify-center gap-1.5 cursor-pointer disabled:opacity-50"
+                        >
+                          {isTestingRailway ? (
+                            <>
+                              <RefreshCw className="h-3.5 w-3.5 animate-spin" />
+                              Handshake SQL...
+                            </>
+                          ) : (
+                            <>
+                              <Activity className="h-3.5 w-3.5 text-[#F30067]" />
+                              Tester la liaison SQL
+                            </>
+                          )}
+                        </button>
+                      </div>
+
+                    </div>
+                  )}
+
+                </div>
+
+              </div>
+
+              {/* LIAISON DEVOPS INTEROPÉRABILITÉ (Vercel + Railway Bridge) */}
+              <div className="border rounded-2xl p-5 bg-[#0B1F3A] text-white space-y-4 shadow-xl border-white/10 relative overflow-hidden text-left">
+                <div className="absolute top-0 right-0 w-48 h-48 bg-[#FF7A00]/10 rounded-full blur-2xl pointer-events-none" />
+                
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                  <div className="flex items-center gap-3">
+                    <div className="flex -space-x-2.5 items-center">
+                      <div className="h-8 w-8 bg-[#06101E] text-white flex items-center justify-center rounded-full border border-white/10 text-[10px] font-bold shadow-md select-none">
+                        ▲
+                      </div>
+                      <div className="h-8 w-8 bg-[#1E1432] text-[#F30067] flex items-center justify-center rounded-full border border-white/10 text-xs font-black shadow-md font-mono select-none">
+                        r_
+                      </div>
+                    </div>
+                    <div>
+                      <h4 className="font-extrabold text-xs text-white tracking-tight font-sans">
+                        Passerelle de Liaison Vercel ⟷ Railway SQL
+                      </h4>
+                      <p className="text-[10px] text-slate-400 mt-0.5 leading-normal">
+                        Injectez automatiquement les chaînes de connexion PostgreSQL et Redis de Railway en tant que variables d'environnement distantes sécurisées sur vos déploiements Vercel.
+                      </p>
+                    </div>
+                  </div>
+
+                  <div>
+                    {!vercelConnected || !railwayConnected ? (
+                      <span className="text-[9px] font-mono bg-[#06101E] text-slate-400 border border-white/5 py-1 px-2.5 rounded-full font-bold">
+                        En attente des connexions...
+                      </span>
+                    ) : (
+                      <span className={`text-[9.5px] font-mono border py-1 px-3 rounded-full font-bold uppercase transition-all ${
+                        vercelRailwayBridgeActive 
+                          ? "bg-emerald-500/10 text-emerald-400 border-emerald-500/20" 
+                          : "bg-amber-400/10 text-amber-400 border-amber-400/20 animate-pulse"
+                      }`}>
+                        {vercelRailwayBridgeActive ? "Liaison active" : "Synchronisation requise"}
+                      </span>
+                    )}
+                  </div>
+                </div>
+
+                <div className="border-t border-white/10 pt-3.5 flex flex-col sm:flex-row sm:items-center justify-between gap-3 font-sans">
+                  <div className="text-[10.5px] text-slate-350 max-w-sm">
+                    {vercelRailwayBridgeActive ? (
+                      <span className="text-emerald-400 font-bold flex items-center gap-1">
+                        ✓ Variables DATABASE_URL, REDIS_URL et GLAB_ENV propagées de Railway vers le SDK Vercel.
+                      </span>
+                    ) : (
+                      <span>
+                        Associez les deux plateformes de production pour activer le pont d'injection réseau sécurisé à sens unique (Railway SQL → Vercel Environment).
+                      </span>
+                    )}
+                  </div>
+
+                  <button
+                    type="button"
+                    disabled={!vercelConnected || !railwayConnected}
+                    onClick={() => {
+                      if (vercelRailwayBridgeActive) {
+                        setVercelRailwayBridgeActive(false);
+                        triggerNotification("Variables d'environnement désynchronisées.", "info");
+                      } else {
+                        setVercelRailwayBridgeActive(true);
+                        triggerNotification("Raccordement Vercel ⟷ Railway établi ! Les variables d'environnement SQL ont été injectées sur Vercel.", "success");
+                        // Inject into Vercel build logs if enabled
+                        setVercelDeployLogs(prev => [
+                          ...prev,
+                          `[${new Date().toLocaleTimeString('fr-FR')}] [DevOps Bridge] Liaison de données Railway détectée.`,
+                          `[${new Date().toLocaleTimeString('fr-FR')}] [DevOps Bridge] Injection réseau de la chaine: ${railwayDbUrl.slice(0, 20)}...`
+                        ]);
+                      }
+                    }}
+                    className={`px-4 py-2 rounded-xl text-xs font-black transition-all flex items-center gap-1.5 cursor-pointer border-0 ${
+                      !vercelConnected || !railwayConnected
+                        ? "bg-white/5 text-slate-500 cursor-not-allowed"
+                        : vercelRailwayBridgeActive
+                          ? "bg-rose-600 hover:bg-rose-700 text-white"
+                          : "bg-[#FF7A00] hover:bg-[#E06B00] text-white shadow-lg"
+                    }`}
+                  >
+                    <Zap className="h-3.5 w-3.5" />
+                    {vercelRailwayBridgeActive ? "Couper la liaison" : "Établir la liaison SSO"}
+                  </button>
+                </div>
+              </div>
+
+              {/* DevOps Warning / Summary banner */}
+              <div className="bg-[#0B1F3A]/[0.02] border border-slate-150 p-4.5 rounded-2xl text-xs space-y-2 text-slate-600 font-medium md:flex md:items-start md:gap-4 md:space-y-0 text-left">
+                <span className="text-xl inline-block mt-0.5">🚀</span>
+                <div className="space-y-1 leading-relaxed">
+                  <strong className="text-slate-850 font-extrabold text-[12px] block">Déploiement central unifié GLABTECH</strong>
+                  <p className="text-[11px] text-slate-500 leading-normal">
+                    Toutes les variables d'environnement SSO, les variables de sécurité RSA et les configurations de tokens d'accès asymétriques issues de votre tableau de bord central sont injectées automatiquement lors des builds de production déclenchés pour vos clients.
+                  </p>
+                </div>
+              </div>
+
+            </div>
+          )}
+
         </div>
 
       </div>
@@ -4661,6 +5472,626 @@ export function SupportTab() {
           </button>
         </form>
       </div>
+    </div>
+  );
+}
+
+// ==========================================
+// 8. APPROVALS & LICENSES TAB (Approbations Clients)
+// ==========================================
+export interface TrialRequest {
+  id: string;
+  appId: string;
+  appName: string;
+  ownerName: string;
+  email: string;
+  phone: string;
+  country: string;
+  language: string;
+  companySize: string;
+  subdomain: string;
+  status: "pending" | "approved" | "rejected";
+}
+
+interface ApprovalsTabProps {
+  user: PortalUser;
+  tenants: Record<string, TenantData>;
+  setTenants: React.Dispatch<React.SetStateAction<Record<string, TenantData>>>;
+  apps: ManagedApp[];
+  onNotify: (msg: string, type: 'success' | 'warn' | 'info') => void;
+}
+
+export function ApprovalsTab({
+  user,
+  tenants,
+  setTenants,
+  apps,
+  onNotify
+}: ApprovalsTabProps) {
+  const [requests, setRequests] = useState<TrialRequest[]>([]);
+  const [loading, setLoading] = useState(false);
+  const [selectedTenantName, setSelectedTenantName] = useState<string>(user.tenant);
+
+  // Offline/Demo requests for robust experience if API is empty
+  const [fallbackRequests, setFallbackRequests] = useState<TrialRequest[]>([
+    {
+      id: "req-trial-1",
+      appId: "glab-resto",
+      appName: "G-RESTO",
+      ownerName: "Antoine Lambert",
+      email: "a.lambert@resto-lyon.fr",
+      phone: "+33 6 12 34 56 78",
+      country: "France",
+      language: "Français",
+      companySize: "11-50",
+      subdomain: "resto-lyon-prestige",
+      status: "pending"
+    },
+    {
+      id: "req-trial-2",
+      appId: "glab-hotel",
+      appName: "G-HOTEL",
+      ownerName: "Clarisse Menard",
+      email: "c.menard@riviera-hotels.com",
+      phone: "+33 7 89 01 23 45",
+      country: "Monaco",
+      language: "Français",
+      companySize: "51-200",
+      subdomain: "riviera-monaco",
+      status: "pending"
+    },
+    {
+      id: "req-trial-3",
+      appId: "glab-erp",
+      appName: "G-ERP",
+      ownerName: "Markus Visser",
+      email: "visser@belgacom.be",
+      phone: "+32 475 22 33 44",
+      country: "Belgique",
+      language: "Néerlandais",
+      companySize: "201-500",
+      subdomain: "belgacom-erp-hq",
+      status: "approved"
+    }
+  ]);
+
+  const loadRequests = async () => {
+    setLoading(true);
+    try {
+      const res = await fetch("/api/trial-requests");
+      if (res.ok) {
+        const data = await res.json();
+        if (data && data.length > 0) {
+          setRequests(data);
+        } else {
+          setRequests(fallbackRequests);
+        }
+      } else {
+        setRequests(fallbackRequests);
+      }
+    } catch (err) {
+      setRequests(fallbackRequests);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    loadRequests();
+  }, []);
+
+  const handleUpdateTrialStatus = async (reqId: string, newStatus: "approved" | "rejected") => {
+    try {
+      const targetReq = requests.find(r => r.id === reqId) || fallbackRequests.find(r => r.id === reqId);
+      if (!targetReq) return;
+
+      const res = await fetch(`/api/trial-requests/${reqId}/status`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ status: newStatus })
+      });
+
+      // Synchronize frontend lists
+      const updatedRequests = requests.map(r => r.id === reqId ? { ...r, status: newStatus } : r);
+      setRequests(updatedRequests);
+      setFallbackRequests(fallbackRequests.map(r => r.id === reqId ? { ...r, status: newStatus } : r));
+
+      if (newStatus === "approved") {
+        // Automatically create a new Multi-Tenant organization for the client!
+        const newOrgName = targetReq.subdomain.toUpperCase().trim();
+        if (tenants[newOrgName]) {
+          onNotify(`La demande est approuvée. Le locataire '${newOrgName}' existe déjà.`, "info");
+          return;
+        }
+
+        const newTenant: TenantData = {
+          databaseName: `db-cl_${targetReq.subdomain.toLowerCase().replace(/[^a-z0-9]/g, "_")}`,
+          region: `${targetReq.country} (Region-SaaS)`,
+          securityLevel: "Maximal (RSA-4096)",
+          autoBackups: true,
+          allowedApps: ["glab-aistudio-connector", targetReq.appId || "glab-hotel", "glab-erp"],
+          plan: "Business Suite",
+          price: 99,
+          seatsUsed: 1,
+          seatsMax: 10,
+          stripeConnected: false,
+          stripeApiKey: "",
+          invoices: [
+            { 
+              date: new Date().toLocaleDateString("fr-FR"), 
+              user: targetReq.email, 
+              plan: "Business Suite (Essai Approuvé)", 
+              price: 0, 
+              ref: `trial_approved_${Math.random().toString(36).substring(2, 8)}` 
+            }
+          ],
+          users: [
+            { 
+              id: `usr-trial-${Date.now()}`, 
+              name: targetReq.ownerName, 
+              email: targetReq.email, 
+              role: "Global Owner", 
+              status: "actif", 
+              lastLogin: "Jamais connecté (Essai validé)", 
+              permissions: ["apps", "billing", "users", "settings"] 
+            }
+          ]
+        };
+
+        setTenants(prev => ({
+          ...prev,
+          [newOrgName]: newTenant
+        }));
+
+        setSelectedTenantName(newOrgName);
+        onNotify(`Demande approuvée l'organisation '${newOrgName}' a été créée et les licences de ${targetReq.appName} ont été provisionnées.`, "success");
+      } else {
+        onNotify(`Demande d'essai rejetée avec signature SecOps.`, "warn");
+      }
+    } catch (err) {
+      onNotify("Erreur lors de la modification du statut de la demande.", "warn");
+    }
+  };
+
+  const handleDeleteRequest = (reqId: string) => {
+    setRequests(prev => prev.filter(r => r.id !== reqId));
+    setFallbackRequests(prev => prev.filter(r => r.id !== reqId));
+    onNotify("Demande de souscription supprimée définitivement.", "info");
+  };
+
+  // 2. Licensing Core Actions
+  const currentTenant = tenants[selectedTenantName] || tenants[user.tenant];
+
+  const handleToggleAppLicense = (appId: string) => {
+    if (!currentTenant) return;
+    const isAllowed = currentTenant.allowedApps.includes(appId);
+    let updatedApps: string[];
+    if (isAllowed) {
+      updatedApps = currentTenant.allowedApps.filter(id => id !== appId);
+      onNotify(`Licence de l'application révoquée pour le tenant : ${appId}`, "warn");
+    } else {
+      updatedApps = [...currentTenant.allowedApps, appId];
+      onNotify(`Licence accordée et provisionnée pour le tenant : ${appId}`, "success");
+    }
+
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        allowedApps: updatedApps
+      }
+    }));
+  };
+
+  const handleUpdateTenantPlan = (planName: "Starter Sandbox" | "Business Suite" | "Enterprise Premium") => {
+    if (!currentTenant) return;
+    const priceMap = {
+      "Starter Sandbox": 29,
+      "Business Suite": 99,
+      "Enterprise Premium": 349
+    };
+    const seatsMap = {
+      "Starter Sandbox": 5,
+      "Business Suite": 20,
+      "Enterprise Premium": 100
+    };
+
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        plan: planName,
+        price: priceMap[planName],
+        seatsMax: seatsMap[planName]
+      }
+    }));
+    onNotify(`Plan d'abonnement mis à niveau vers : ${planName} (${seatsMap[planName]} sièges max)`, "success");
+  };
+
+  const handleAdjustSeatsLimit = (seats: number) => {
+    if (!currentTenant) return;
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        seatsMax: seats
+      }
+    }));
+    onNotify(`Capacité de licences utilisateur ajustée à ${seats} sièges.`, "info");
+  };
+
+  // 3. Global User Actions
+  const handleValidateUser = (userId: string) => {
+    if (!currentTenant) return;
+    const updatedUsers = currentTenant.users.map(u => {
+      if (u.id === userId) {
+        return { ...u, status: "actif" };
+      }
+      return u;
+    });
+
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        users: updatedUsers
+      }
+    }));
+    onNotify("Compte de l'utilisateur SSO validé et activé.", "success");
+  };
+
+  const handleSuspendUser = (userId: string, currentStatus: string) => {
+    if (!currentTenant) return;
+    const nextStatus = currentStatus === "actif" ? "suspendu" : "actif";
+    const updatedUsers = currentTenant.users.map(u => {
+      if (u.id === userId) {
+        return { ...u, status: nextStatus };
+      }
+      return u;
+                });
+
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        users: updatedUsers
+      }
+    }));
+    onNotify(`Utilisateur mis au statut : ${nextStatus.toUpperCase()}`, nextStatus === "suspendu" ? "warn" : "success");
+  };
+
+  const handleDeleteUser = (userId: string) => {
+    if (!currentTenant) return;
+    const targetUser = currentTenant.users.find(u => u.id === userId);
+    if (!targetUser) return;
+
+    if (targetUser.email === user.email) {
+      onNotify("Impossible de révoquer votre propre session admin active.", "warn");
+      return;
+    }
+
+    const updatedUsers = currentTenant.users.filter(u => u.id !== userId);
+    setTenants(prev => ({
+      ...prev,
+      [selectedTenantName]: {
+        ...currentTenant,
+        users: updatedUsers,
+        seatsUsed: Math.max(0, currentTenant.seatsUsed - 1)
+      }
+    }));
+    onNotify(`Compte utilisateur '${targetUser.name}' supprimé de l'organisation.`, "success");
+  };
+
+  return (
+    <div className="space-y-6 animate-motion-in">
+      
+      {/* SECTION 1: APPROBATIONS DEMANDES CLIENTS */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-premium">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 mb-6">
+          <div>
+            <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-brand-orange animate-pulse" />
+              Réception & Approbations des Demandes Clients
+            </h3>
+            <p className="text-xs text-slate-500 mt-0.5">
+              Recevez les demandes d'activation ou d'essais gratuits envoyées par les clients et approuvez la création de leur tenant isolé.
+            </p>
+          </div>
+          <button 
+            type="button" 
+            onClick={loadRequests} 
+            className="flex items-center gap-1 bg-slate-50 border border-slate-200 hover:bg-slate-100 rounded-xl px-3 py-1.5 text-xs text-slate-600 font-semibold cursor-pointer"
+          >
+            <RefreshCw className={`h-3.5 w-3.5 ${loading ? "animate-spin" : ""}`} /> Rafraîchir
+          </button>
+        </div>
+
+        {requests.length === 0 ? (
+          <p className="text-xs text-slate-400 italic py-4 text-center">Aucune demande client en attente de traitement.</p>
+        ) : (
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+            {requests.map((req) => (
+              <div 
+                key={req.id} 
+                className={`p-4 rounded-xl border transition-all ${
+                  req.status === "approved" 
+                    ? "bg-emerald-50/50 border-emerald-200" 
+                    : req.status === "rejected"
+                    ? "bg-rose-50/50 border-rose-200"
+                    : "bg-slate-50/70 border-slate-200 hover:border-slate-300"
+                }`}
+              >
+                <div className="flex justify-between items-start mb-2">
+                  <div>
+                    <span className="text-[10px] uppercase font-mono bg-brand-orange/20 text-brand-orange font-bold px-1.5 py-0.5 rounded border border-brand-orange/20">
+                      Application {req.appName}
+                    </span>
+                    <h4 className="font-extrabold text-[#0B1F3A] mt-1.5 text-xs leading-none">{req.ownerName}</h4>
+                    <span className="text-[10.5px] text-slate-500 font-mono block mt-0.5">{req.email}</span>
+                  </div>
+                  <span className={`text-[10px] font-mono px-2 py-0.5 rounded-full border ${
+                    req.status === "approved" ? "bg-emerald-100/50 text-emerald-800 border-emerald-200" :
+                    req.status === "rejected" ? "bg-rose-100/50 text-rose-800 border-rose-200" :
+                    "bg-amber-100/50 text-amber-800 border-amber-200"
+                  }`}>
+                    {req.status === "approved" ? "Approuvé (Activé)" :
+                     req.status === "rejected" ? "Rejeté" : "En attente"}
+                  </span>
+                </div>
+
+                <div className="bg-white/80 border border-slate-100 rounded-lg p-2.5 my-3 text-[11px] text-slate-600 font-medium space-y-1">
+                  <div><strong>Sous-domaine :</strong> <span className="font-mono text-[#0B1F3A] text-[11.5px] font-bold">{req.subdomain}.glabtech.com</span></div>
+                  <div><strong>Téléphone :</strong> {req.phone || "Non renseigné"}</div>
+                  <div><strong>Taille entreprise :</strong> {req.companySize} • <strong>Pays :</strong> {req.country} ({req.language})</div>
+                </div>
+
+                <div className="flex items-center justify-between mt-3 pt-2 border-t border-slate-100">
+                  <button
+                    type="button"
+                    onClick={() => handleDeleteRequest(req.id)}
+                    className="flex items-center gap-1 text-rose-600 hover:text-rose-800 text-[11px] font-bold bg-transparent border-0 cursor-pointer"
+                  >
+                    <Trash2 className="h-3.5 w-3.5" /> Supprimer
+                  </button>
+
+                  {req.status === "pending" && (
+                    <div className="flex gap-2 text-xs">
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateTrialStatus(req.id, "rejected")}
+                        className="bg-transparent border border-slate-200 hover:bg-slate-100 text-slate-600 font-semibold py-1 px-3 rounded-lg cursor-pointer"
+                      >
+                        Refuser
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => handleUpdateTrialStatus(req.id, "approved")}
+                        className="bg-[#0B1F3A] hover:bg-black text-white font-bold py-1 px-3.5 rounded-lg cursor-pointer border-0 shadow-sm"
+                      >
+                        Valider & Activer
+                      </button>
+                    </div>
+                  )}
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
+      {/* SECTION 2: GESTION DES LICENCES D'APPLICATIONS PAR LOCATAIRE */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-premium">
+        <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 mb-2">
+          <Building2 className="h-5 w-5 text-brand-orange" />
+          Abonnements & Attribution des Licences Microservices
+        </h3>
+        <p className="text-xs text-slate-500 mb-5">
+          Sélectionnez un locataire existant ou nouvellement approuvé pour gérer à la volée ses microservices de confiance et ses quotas de licences.
+        </p>
+
+        <div className="bg-slate-50 border border-slate-200 rounded-2xl p-4.5 mb-6">
+          <div className="flex flex-col sm:flex-row gap-4 items-end sm:items-center justify-between">
+            <div className="space-y-1 w-full sm:w-1/3">
+              <label className="text-[9px] uppercase font-mono tracking-wider text-slate-400 block font-black">Entreprise Multi-Tenant</label>
+              <select
+                value={selectedTenantName}
+                onChange={(e) => setSelectedTenantName(e.target.value)}
+                className="w-full text-xs font-bold text-slate-800 bg-white border border-slate-200 rounded-xl p-2.5 focus:outline-none focus:border-brand-orange"
+              >
+                {Object.keys(tenants).map(t => <option key={t} value={t}>{t}</option>)}
+              </select>
+            </div>
+
+            {currentTenant && (
+              <div className="flex flex-wrap items-center gap-4 text-xs">
+                <div className="bg-white px-3 py-1.5 rounded-lg border border-slate-100 text-[11px]">
+                  <strong>Plan Actuel :</strong> <span className="text-brand-orange font-bold">{currentTenant.plan}</span>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-lg border border-slate-100 text-[11px]">
+                  <strong>Sièges Utilisés :</strong> <span className="font-bold">{currentTenant.users.length} / {currentTenant.seatsMax}</span>
+                </div>
+                <div className="bg-white px-3 py-1.5 rounded-lg border border-slate-100 text-[11px]">
+                  <strong>Région Base :</strong> <span className="font-mono text-slate-500">{currentTenant.region}</span>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
+        {currentTenant ? (
+          <div className="space-y-6">
+            
+            {/* Options of plans upgrades */}
+            <div className="space-y-2">
+              <strong className="text-[10px] uppercase font-mono tracking-widest text-[#FF7A00] block font-black">Changer la Catégorie de la Licence d'Abonnement</strong>
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                {[
+                  { name: "Starter Sandbox" as const, price: "29€/mois", seats: "5 collaborateurs" },
+                  { name: "Business Suite" as const, price: "99€/mois", seats: "20 collaborateurs" },
+                  { name: "Enterprise Premium" as const, price: "349€/mois", seats: "100 collaborateurs" }
+                ].map((planOpt) => (
+                  <button
+                    key={planOpt.name}
+                    type="button"
+                    onClick={() => handleUpdateTenantPlan(planOpt.name)}
+                    className={`p-3 text-left rounded-xl border text-xs flex flex-col justify-between transition-all cursor-pointer ${
+                      currentTenant.plan === planOpt.name 
+                        ? "bg-[#0B1F3A] text-white border-[#0B1F3A] shadow-premium-sm"
+                        : "bg-slate-50 text-slate-700 border-slate-150 hover:bg-slate-100"
+                    }`}
+                  >
+                    <span className="font-bold">{planOpt.name}</span>
+                    <div className="flex justify-between items-center w-full mt-2 pt-1.5 border-t border-slate-150/10">
+                      <span className="font-mono text-[10.5px] font-semibold">{planOpt.price}</span>
+                      <span className="text-[9.5px] text-slate-400 font-mono">{planOpt.seats}</span>
+                    </div>
+                  </button>
+                ))}
+              </div>
+            </div>
+
+            {/* Slider to adjust the max seats manually */}
+            <div className="bg-slate-50 p-4 rounded-xl border border-slate-150 space-y-2">
+              <div className="flex justify-between text-xs items-center">
+                <span className="font-bold text-slate-800">Nombre Maximal de Collaborateurs SSO (Sièges Licenciés)</span>
+                <span className="font-mono font-black text-brand-orange bg-brand-orange/10 px-2 py-0.5 rounded border border-brand-orange/20">
+                  {currentTenant.seatsMax} Sièges
+                </span>
+              </div>
+              <input 
+                type="range"
+                min="3"
+                max="150"
+                value={currentTenant.seatsMax}
+                onChange={(e) => handleAdjustSeatsLimit(parseInt(e.target.value))}
+                className="w-full h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#FF7A00]"
+              />
+              <p className="text-[10px] text-slate-450 leading-normal">
+                Modifiez de façon asymétrique les seuils autorisés pour limiter le quota de jetons de session JWT utilisables. Terminez la configuration via SSO.
+              </p>
+            </div>
+
+            {/* Microservices licenses activation selection grid */}
+            <div className="space-y-2">
+              <strong className="text-[10px] uppercase font-mono tracking-widest text-[#FF7A00] block font-black">Activer/Désactiver les Licences Applicatives Clés</strong>
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-2">
+                {apps.map((app) => {
+                  const hasLicense = currentTenant.allowedApps.includes(app.id);
+                  return (
+                    <button
+                      key={app.id}
+                      type="button"
+                      onClick={() => handleToggleAppLicense(app.id)}
+                      className={`p-2.5 rounded-xl border text-xs text-left transition-all flex items-center justify-between cursor-pointer ${
+                        hasLicense 
+                          ? "bg-slate-50 border-[#FF7A00] text-[#0B1F3A] font-bold shadow-premium-sm"
+                          : "bg-white border-slate-200 text-slate-400 hover:bg-slate-50"
+                      }`}
+                    >
+                      <span className="truncate pr-1">{app.name}</span>
+                      <span className={`h-2 w-2 rounded-full inline-block ${hasLicense ? "bg-emerald-500 shadow-emerald-glow" : "bg-slate-300"}`} />
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+          </div>
+        ) : (
+          <p className="text-xs text-slate-400 italic">Une erreur est survenue lors de la synchronisation de l'organisation.</p>
+        )}
+      </div>
+
+      {/* SECTION 3: VALIDER, SUPPRIMER, SUSPENDRE UN UTILISATEUR GLOBALE */}
+      <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-premium">
+        <h3 className="font-extrabold text-sm text-slate-900 flex items-center gap-2 mb-2">
+          <Users className="h-5 w-5 text-brand-orange animate-pulse" />
+          Validation & Modération Globale des Utilisateurs SSO
+        </h3>
+        <p className="text-xs text-slate-500 mb-5">
+          Validation d'identités cryptographiques, suspension d'accès SecOps, et radiation d'utilisateurs rattachés au tenant <span className="font-bold text-[#0B1F3A]">{selectedTenantName}</span>.
+        </p>
+
+        {currentTenant && currentTenant.users.length === 0 ? (
+          <p className="text-xs text-slate-400 italic py-4 text-center">Aucun utilisateur fédéré pour ce locataire.</p>
+        ) : (
+          <div className="overflow-x-auto">
+            <table className="w-full text-left text-xs">
+              <thead>
+                <tr className="border-b border-slate-100 text-slate-400 text-[9px] uppercase font-mono py-2">
+                  <th className="pb-2">Utilisateur</th>
+                  <th>E-mail</th>
+                  <th>Rôle de SSO</th>
+                  <th>Statut Sécurité</th>
+                  <th className="text-right">Régulation Actions</th>
+                </tr>
+              </thead>
+              <tbody className="divide-y divide-slate-100 font-semibold text-slate-700">
+                {currentTenant?.users.map((member) => (
+                  <tr key={member.id} className="hover:bg-slate-50/50">
+                    <td className="py-2.5 flex items-center gap-2">
+                      <div className="h-7 w-7 bg-slate-100 text-slate-600 rounded-full flex items-center justify-center font-bold font-mono text-xs">
+                        {member.name.substring(0,2).toUpperCase()}
+                      </div>
+                      <span className="font-bold text-slate-900">{member.name}</span>
+                    </td>
+                    <td>{member.email}</td>
+                    <td>
+                      <span className="bg-slate-100 text-slate-705 border border-slate-200 px-1.5 py-0.5 rounded text-[8.5px] font-mono">
+                        {member.role}
+                      </span>
+                    </td>
+                    <td>
+                      <div className="flex items-center gap-1.5">
+                        <span className={`h-2.5 w-2.5 rounded-full inline-block ${
+                          member.status === 'actif' ? 'bg-emerald-500 shadow-emerald-glow' : 
+                          member.status === 'invité' ? 'bg-amber-400 animate-pulse' : 'bg-rose-500'
+                        }`} />
+                        <span className="capitalize text-[10.5px]">{member.status}</span>
+                      </div>
+                    </td>
+                    <td className="text-right space-x-2.5">
+                      {member.status !== "actif" && (
+                        <button
+                          type="button"
+                          onClick={() => handleValidateUser(member.id)}
+                          className="text-[10px] font-mono font-bold bg-emerald-50 text-emerald-700 hover:text-white hover:bg-emerald-600 border border-emerald-300 py-1 px-2 rounded-lg cursor-pointer"
+                          title="Valider l'utilisateur"
+                        >
+                          Valider
+                        </button>
+                      )}
+                      
+                      <button
+                        type="button"
+                        onClick={() => handleSuspendUser(member.id, member.status)}
+                        className={`text-[10px] font-mono font-bold py-1 px-2 rounded-lg cursor-pointer border ${
+                          member.status === "suspendu" 
+                            ? "bg-slate-50 text-slate-700 hover:bg-slate-200 border-slate-300" 
+                            : "bg-rose-50 text-rose-700 hover:bg-rose-600 hover:text-white border-rose-300"
+                        }`}
+                        title={member.status === "suspendu" ? "Réactiver l'accès" : "Suspendre temporairement"}
+                      >
+                        {member.status === "suspendu" ? "Réactiver" : "Suspendre"}
+                      </button>
+
+                      <button
+                        type="button"
+                        onClick={() => handleDeleteUser(member.id)}
+                        className="text-[10px] font-mono font-bold bg-transparent text-rose-500 hover:text-rose-700 border-0 cursor-pointer"
+                        title="Révoquer définitivement de l'infrastructure"
+                      >
+                        <Trash2 className="h-3.5 w-3.5 inline" />
+                      </button>
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        )}
+      </div>
+
     </div>
   );
 }

@@ -238,7 +238,7 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
               {/* JWT PAYLOAD SECTION */}
               <div className="space-y-2">
                 <div className="flex items-center justify-between">
-                  <span className="text-[10px] font-mono text-sky-400 uppercase tracking-widest block font-bold">2. PAYLOAD (Revendications & Rôles)</span>
+                  <span className="text-[10px] font-mono text-emerald-400 uppercase tracking-widest block font-bold">2. PAYLOAD (Revendications & Rôles)</span>
                   
                   {/* Selector to change role in token dynamically */}
                   <div className="flex items-center gap-1">

@@ -344,6 +344,24 @@ class MemoryDatabase {
 
   applications: DbApplication[] = [
     {
+      id: "glab-aistudio-connector",
+      name: "G-AISTUDIO CONNECTOR",
+      description: "Connecteur bidirectionnel et pont d'intégration raccordé en temps réel à l'Applet Google AI Studio (ID: d244b68b-4792-460f-a75e-3a02fdaacd42). Idéal pour automatiser des workflows intelligents d'IA.",
+      category: "Custom",
+      url: "https://ai.studio",
+      status: "online",
+      version: "v1.0.0",
+      icon: "Sparkles",
+      ping: 8,
+      activeUsers: 1,
+      apiRequestsToday: 1540,
+      ssoConnected: true,
+      ssoClientId: "client_id_aistudio_d244b68b",
+      ssoClientSecret: "sec_aistudio_e478aa92e21b0dc5",
+      recordsCount: 16,
+      createdAt: new Date().toISOString()
+    },
+    {
       id: "glab-hotel",
       name: "G-HOTEL",
       description: "hotel.glabtech.com - Solution complète de gestion hôtelière : réservations de chambres, conciergerie, plannings de nuitées et facturation automatisée.",
@@ -582,21 +600,21 @@ class MemoryDatabase {
   // Map Licensed Applications to Tenants
   licensedApps: Record<string, string[]> = {
     "org-glabtech-hq": [
-      "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market",
+      "glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market",
       "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school",
       "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"
     ],
     "org-glabtech-na": [
-      "glab-erp", "glab-crm", "glab-market", "glab-trustfinance",
+      "glab-aistudio-connector", "glab-erp", "glab-crm", "glab-market", "glab-trustfinance",
       "glab-comptabilite", "glab-rhsysteme"
     ],
     "org-glabtech-global": [
-      "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market",
+      "glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market",
       "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school",
       "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"
     ],
     "org-sandbox-lab": [
-      "glab-hotel", "glab-resto", "glab-gazolplus"
+      "glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-gazolplus"
     ]
   };
 

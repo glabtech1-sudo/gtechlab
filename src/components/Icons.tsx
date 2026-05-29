@@ -21,7 +21,8 @@ import {
   Zap,
   Lock,
   BookOpen,
-  Fingerprint
+  Fingerprint,
+  Sparkles
 } from "lucide-react";
 
 interface KeepKeyIconProps {
@@ -74,6 +75,8 @@ export function KeepKeyIcon({ name, className = "h-5 w-5", id }: KeepKeyIconProp
       return <BookOpen className={className} id={id} />;
     case "Fingerprint":
       return <Fingerprint className={className} id={id} />;
+    case "Sparkles":
+      return <Sparkles className={className} id={id} />;
     default:
       return <Layers className={className} id={id} />;
   }

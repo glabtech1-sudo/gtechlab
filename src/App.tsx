@@ -32,7 +32,8 @@ import {
   NotificationsTab, 
   SettingsTab, 
   SupportTab,
-  TenantData
+  TenantData,
+  ApprovalsTab
 } from "./components/ExtraTabs";
 
 export default function App() {
@@ -56,7 +57,7 @@ export default function App() {
       region: "Paris (AWS-eu-west-3)",
       securityLevel: "Maximal (RSA-4096)",
       autoBackups: true,
-      allowedApps: ["glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market", "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school", "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
+      allowedApps: ["glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market", "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school", "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
       plan: "Enterprise Premium",
       price: 349,
       seatsUsed: 14,
@@ -80,7 +81,7 @@ export default function App() {
       region: "New-York (GCP-us-east1)",
       securityLevel: "Standard (HMAC-256)",
       autoBackups: false,
-      allowedApps: ["glab-erp", "glab-crm", "glab-market", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
+      allowedApps: ["glab-aistudio-connector", "glab-erp", "glab-crm", "glab-market", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
       plan: "Business Suite",
       price: 99,
       seatsUsed: 3,
@@ -101,7 +102,7 @@ export default function App() {
       region: "Singapour (AWS-ap-southeast-1)",
       securityLevel: "Premium (RSA-2048)",
       autoBackups: true,
-      allowedApps: ["glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market", "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school", "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
+      allowedApps: ["glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-erp", "glab-crm", "glab-market", "glab-travel", "glab-hopital", "glab-ecommerce", "glab-school", "glab-gazolplus", "glab-trustfinance", "glab-comptabilite", "glab-rhsysteme"],
       plan: "Enterprise Premium",
       price: 349,
       seatsUsed: 2,
@@ -119,7 +120,7 @@ export default function App() {
       region: "London (GCP-europe-west2)",
       securityLevel: "Standard (HMAC-256)",
       autoBackups: false,
-      allowedApps: ["glab-hotel", "glab-resto", "glab-gazolplus"],
+      allowedApps: ["glab-aistudio-connector", "glab-hotel", "glab-resto", "glab-gazolplus"],
       plan: "Starter Sandbox",
       price: 0,
       seatsUsed: 2,
@@ -182,48 +183,56 @@ export default function App() {
   const fetchApps = async () => {
     try {
       const res = await fetch("/api/apps");
-      if (res.ok) {
+      if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
         const data = await res.json();
         setApps(data);
+      } else {
+        console.warn("fetchApps: Non-JSON response or invalid status", res.status);
       }
     } catch (e) {
-      console.error("fetchApps error", e);
+      console.warn("fetchApps silent retry warning:", e);
     }
   };
 
   const fetchLogs = async () => {
     try {
       const res = await fetch("/api/logs");
-      if (res.ok) {
+      if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
         const data = await res.json();
         setLogs(data);
+      } else {
+        console.warn("fetchLogs: Non-JSON response or invalid status", res.status);
       }
     } catch (e) {
-      console.error("fetchLogs error", e);
+      console.warn("fetchLogs silent retry warning:", e);
     }
   };
 
   const fetchWorkflows = async () => {
     try {
       const res = await fetch("/api/workflows");
-      if (res.ok) {
+      if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
         const data = await res.json();
         setWorkflows(data);
+      } else {
+        console.warn("fetchWorkflows: Non-JSON response or invalid status", res.status);
       }
     } catch (e) {
-      console.error("fetchWorkflows error", e);
+      console.warn("fetchWorkflows silent retry warning:", e);
     }
   };
 
   const fetchMetrics = async () => {
     try {
       const res = await fetch("/api/metrics");
-      if (res.ok) {
+      if (res.ok && res.headers.get("content-type")?.includes("application/json")) {
         const data = await res.json();
         setMetrics(data);
+      } else {
+        console.warn("fetchMetrics: Non-JSON response or invalid status", res.status);
       }
     } catch (e) {
-      console.error("fetchMetrics error", e);
+      console.warn("fetchMetrics silent retry warning:", e);
     }
   };
 
@@ -361,7 +370,7 @@ export default function App() {
         showNotification(`Secret d'authentification SSO régénéré pour ${name}.`, 'success');
       }
     } catch (e) {
-      console.error(e);
+      console.warn("handleRegenSso error", e);
     }
   };
 
@@ -376,7 +385,7 @@ export default function App() {
         showNotification(`Diagnostic réseau OK pour ${name}. Code de retour synchronisé.`, 'success');
       }
     } catch (e) {
-      console.error(e);
+      console.warn("handleSyncApp error", e);
     }
   };
 
@@ -394,7 +403,7 @@ export default function App() {
         showNotification(`Enregistrement mis à jour pour ${name} (${amount > 0 ? '+' : ''}${amount}).`, 'success');
       }
     } catch (e) {
-      console.error(e);
+      console.warn("handleAdjustRecords error", e);
     }
   };
 
@@ -631,6 +640,7 @@ export default function App() {
                 apps={apps}
                 metrics={metrics}
                 workflows={workflows}
+                logs={logs}
                 onAdjustRecords={handleAdjustRecords}
                 onToggleWorkflow={handleToggleWorkflow}
                 onOpenWorkflowModal={() => setAddWorkflowModalOpen(true)}
@@ -649,6 +659,7 @@ export default function App() {
                 onSyncApp={handleSyncApp}
                 onOpenAddAppModal={() => setAddAppModalOpen(true)}
                 allowedApps={tenants[user.tenant]?.allowedApps}
+                onNotify={showNotification}
               />
             )}
 
@@ -717,6 +728,19 @@ export default function App() {
                ======================================================== */}
             {currentTab === "support" && (
               <SupportTab />
+            )}
+
+            {/* ========================================================
+               TAB 10: APPROBATIONS & LICENCES (CLIENTS)
+               ======================================================== */}
+            {currentTab === "approvals" && (
+              <ApprovalsTab 
+                user={user}
+                tenants={tenants}
+                setTenants={setTenants}
+                apps={apps}
+                onNotify={showNotification}
+              />
             )}
 
           </div>

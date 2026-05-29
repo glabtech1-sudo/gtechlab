@@ -43,6 +43,7 @@ export default function Sidebar({ currentTab, setTab, user, setUser, onOpenAi, o
     { id: "dashboard", label: "Tableau de bord", icon: LayoutDashboard, desc: "Vue globale intelligente" },
     { id: "apps", label: "Applications", icon: Boxes, desc: "Gérer vos microservices unifiés" },
     { id: "organizations", label: "Organizations", icon: Building2, desc: "Multi-tenant logic silos" },
+    { id: "approvals", label: "Approbations Clients", icon: ShieldCheck, desc: "Demandes, validations et licences" },
     { id: "billing", label: "Billing", icon: CreditCard, desc: "Cycle de facturation & Stripe" },
     { id: "users", label: "Users & Rôles", icon: UsersIcon, desc: "Fédération SSO d'utilisateurs" },
     { id: "analytics", label: "Analytics", icon: BarChart3, desc: "Trafics et latences de ping" },

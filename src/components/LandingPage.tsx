@@ -39,7 +39,9 @@ import {
   Music,
   Globe,
   Lock,
-  RefreshCw
+  RefreshCw,
+  Eye,
+  EyeOff
 } from "lucide-react";
 
 interface LandingPageProps {
@@ -71,6 +73,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
   const [ownerName, setOwnerName] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [phone, setPhone] = useState("");
   const [country, setCountry] = useState("Togo");
   const [language, setLanguage] = useState("Français");
@@ -388,26 +391,38 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
                 <ChevronRight className="h-3.5 w-3.5 rotate-90 text-[#0B1F3A]/40 group-hover:text-[#FF7A00] transition-colors" />
               </button>
               
-              {/* Odoo multi-column sub-navigation mockup */}
-              <div className="absolute top-11 left-1/2 -translate-x-1/2 w-[540px] bg-white border border-[#0B1F3A]/10 rounded-2xl shadow-xl p-5 hidden group-hover:block transition-all z-50">
-                <p className="text-[10px] font-mono uppercase tracking-widest text-[#FF7A00] font-black mb-3 border-b pb-2">SOLUTIONS INTERCONNECTÉES</p>
-                <div className="grid grid-cols-2 gap-4">
-                  <div className="p-2.5 hover:bg-[#F5F7FA] rounded-xl cursor-pointer text-left" onClick={() => onEnterApp()}>
-                    <p className="font-extrabold text-xs text-[#0B1F3A]">🚀 G-CRM & G-MARKET</p>
-                    <p className="text-[10px] text-[#0B1F3A]/60 lowercase normal-case mt-0.5">Suivi de leads, scoring IA et ventes en ligne connectées</p>
-                  </div>
-                  <div className="p-2.5 hover:bg-[#F5F7FA] rounded-xl cursor-pointer text-left" onClick={() => onEnterApp()}>
-                    <p className="font-extrabold text-xs text-[#0B1F3A]">🏨 G-HOTEL & G-RESTO</p>
-                    <p className="text-[10px] text-[#0B1F3A]/60 lowercase normal-case mt-0.5">PMS complet de planning des chambres et Point De Vente</p>
-                  </div>
-                  <div className="p-2.5 hover:bg-[#F5F7FA] rounded-xl cursor-pointer text-left" onClick={() => onEnterApp()}>
-                    <p className="font-extrabold text-xs text-[#0B1F3A]">💼 G-ERP & COMPTABILITÉ</p>
-                    <p className="text-[10px] text-[#0B1F3A]/60 lowercase normal-case mt-0.5">Rapprochement bancaire, écritures comptables et rapports financiers</p>
-                  </div>
-                  <div className="p-2.5 hover:bg-[#F5F7FA] rounded-xl cursor-pointer text-left" onClick={() => onEnterApp()}>
-                    <p className="font-extrabold text-xs text-[#0B1F3A]">🔒 SSO & SECURE API</p>
-                    <p className="text-[10px] text-[#0B1F3A]/60 lowercase normal-case mt-0.5">Rotations de clés d'API asymétriques RSA et pare-feu</p>
-                  </div>
+              {/* Odoo multi-column sub-navigation containing all 12 apps */}
+              <div className="absolute top-11 -left-40 w-[680px] md:w-[760px] bg-white border border-[#0B1F3A]/10 rounded-2xl shadow-xl p-5 hidden group-hover:block transition-all z-50">
+                <div className="flex items-center justify-between border-b pb-2 mb-3">
+                  <p className="text-[10px] font-mono uppercase tracking-widest text-[#FF7A00] font-black">NOS SOLUTIONS COMPLÈTES (12 APPLICATIONS CLÉS)</p>
+                  <span className="text-[9px] font-mono text-emerald-600 font-extrabold bg-emerald-50 px-2 py-0.5 rounded border border-emerald-150 animate-pulse">SÉCURISÉ PAR SSO</span>
+                </div>
+                <div className="grid grid-cols-3 gap-3">
+                  {appsList.map((app) => {
+                    const IconComponent = app.icon;
+                    return (
+                      <div 
+                        key={app.id}
+                        className="p-2 hover:bg-[#F5F7FA] rounded-xl cursor-pointer text-left transition-all flex items-start gap-2.5 group/item hover:scale-[1.02]"
+                        onClick={() => {
+                          setWizardApp(app);
+                          setIsWizardOpen(true);
+                        }}
+                      >
+                        <div className="mt-0.5 p-2 rounded-lg bg-[#FF7A00]/5 text-[#FF7A00] group-hover/item:bg-[#FF7A00] group-hover/item:text-white transition-all transform group-hover/item:scale-110">
+                          <IconComponent className="h-4 w-4" />
+                        </div>
+                        <div>
+                          <p className="font-extrabold text-[11px] text-[#0B1F3A] group-hover/item:text-[#FF7A00] transition-colors flex items-center gap-1">
+                            <span>{app.name}</span>
+                          </p>
+                          <p className="text-[9.5px] text-[#0B1F3A]/60 normal-case mt-0.5 line-clamp-2 leading-relaxed font-semibold">
+                            {app.desc}
+                          </p>
+                        </div>
+                      </div>
+                    );
+                  })}
                 </div>
               </div>
             </div>
@@ -494,55 +509,39 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
                   return (
                     <div
                       key={app.id}
-                      onClick={() => toggleAppSelection(app.id)}
-                      className={`relative rounded-2xl border p-4 text-left cursor-pointer transition-all select-none flex flex-col justify-between group ${
-                        isSelected 
-                          ? "border-[#FF7A00] bg-[#FF7A00]/5 scale-[1.02] shadow-md ring-2 ring-[#FF7A00]/10 pb-4 min-h-[185px]" 
-                          : "border-[#0B1F3A]/5 bg-[#F5F7FA]/50 hover:bg-white hover:border-[#0B1F3A]/15 hover:shadow-sm min-h-[145px]"
-                      }`}
+                      onClick={() => {
+                        setWizardApp(app);
+                        setIsWizardOpen(true);
+                      }}
+                      className="relative rounded-2xl border p-4 text-left cursor-pointer transition-all select-none flex flex-col justify-between group border-[#0B1F3A]/5 bg-[#F5F7FA]/50 hover:bg-white hover:border-[#FF7A00] hover:shadow-md min-h-[145px]"
                       style={{ contentVisibility: "auto" }}
                     >
                       {/* Check indicator circle */}
-                      <span 
-                        className={`absolute top-3.5 right-3.5 h-5 w-5 rounded-full flex items-center justify-center text-[10px] border transition-all ${
-                          isSelected 
-                            ? "bg-[#FF7A00] border-[#FF7A00] text-white" 
-                            : "border-[#0B1F3A]/10 bg-white text-transparent"
-                        }`}
-                      >
+                      <span className="absolute top-3.5 right-3.5 h-5 w-5 rounded-full flex items-center justify-center text-[10px] border transition-all border-[#0B1F3A]/10 bg-white text-transparent group-hover:border-[#FF7A00] group-hover:bg-[#FF7A00] group-hover:text-white">
                         ✓
                       </span>
 
                       {/* Accent colors */}
-                      <div className={`h-11 w-11 rounded-xl flex items-center justify-center border bg-white shadow-sm group-hover:scale-105 transition-transform border-[#0B1F3A]/5`}>
-                        <IconComponent className={`h-6 w-6 text-[#FF7A00]`} />
+                      <div className="h-11 w-11 rounded-xl flex items-center justify-center border bg-white shadow-sm group-hover:scale-105 transition-transform border-[#0B1F3A]/5">
+                        <IconComponent className="h-6 w-6 text-[#FF7A00]" />
                       </div>
 
                       {/* Meta context info */}
-                      <div className="mt-3 flex-1">
+                      <div className="mt-4 flex-1">
                         <div className="flex items-center gap-1">
-                          <p className="font-extrabold text-xs text-[#0B1F3A] tracking-tight">{app.name}</p>
+                          <p className="font-extrabold text-xs text-[#0B1F3A] tracking-tight group-hover:text-[#FF7A00] transition-colors">{app.name}</p>
                           <span className="text-[8px] font-mono text-[#0B1F3A]/40">{app.domain}</span>
                         </div>
-                        <p className="text-[10px] text-[#0B1F3A]/60 font-semibold line-clamp-2 leading-relaxed mt-0.5">
+                        <p className="text-[10px] text-[#0B1F3A]/60 font-semibold line-clamp-2 leading-relaxed mt-1">
                           {app.desc}
                         </p>
                       </div>
 
                       {/* Play Commencer CTA */}
-                      {isSelected && (
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            setWizardApp(app);
-                            setIsWizardOpen(true);
-                          }}
-                          className="mt-3 px-3 py-2 text-[11px] font-extrabold text-white bg-[#FF7A00] hover:bg-[#E06B00] rounded-xl transition-all shadow-md flex items-center justify-center gap-1.5 cursor-pointer border-0 w-full animate-bounce"
-                        >
-                          <Play className="h-3 w-3 fill-white text-white" />
-                          Commencer
-                        </button>
-                      )}
+                      <div className="mt-3 text-[10px] font-extrabold text-[#FF7A00] opacity-0 group-hover:opacity-100 transition-opacity flex items-center gap-1">
+                        <Play className="h-3 w-3 fill-[#FF7A00] text-[#FF7A00]" />
+                        <span>Démarrer maintenant</span>
+                      </div>
                     </div>
                   );
                 })}
@@ -1339,11 +1338,11 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
 
       {/* 1. SETUP WIZARD MODAL: DÉMARRER MAINTENANT */}
       {isWizardOpen && wizardApp && (
-        <div className="fixed inset-0 bg-[#0B1F3A]/70 backdrop-blur-md z-50 flex items-center justify-center p-3 overflow-y-auto animate-fadeIn">
-          <div className="bg-white rounded-2xl border border-[#0B1F3A]/10 shadow-2xl max-w-xl w-full overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
+        <div className="fixed inset-0 bg-[#06101E]/80 backdrop-blur-md z-50 flex items-center justify-center p-3 overflow-y-auto animate-fadeIn">
+          <div className="bg-[#0B1F3A] rounded-2xl border border-white/10 shadow-2xl max-w-xl w-full overflow-hidden relative" onClick={(e) => e.stopPropagation()}>
             
             {/* Header branding band - Compact */}
-            <div className="bg-[#0B1F3A] text-white p-4.5 sm:p-5 relative overflow-hidden pb-4">
+            <div className="bg-[#06101E] text-white p-4.5 sm:p-5 relative overflow-hidden pb-4 border-b border-white/5">
               <div className="absolute top-0 right-0 w-32 h-32 bg-[#FF7A00]/10 rounded-full blur-xl pointer-events-none" />
               <button 
                 type="button"
@@ -1366,67 +1365,76 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
             </div>
 
             {/* Content Form - Compact & Responsive */}
-            <form onSubmit={handleStartTrial} className="p-4 sm:p-5 space-y-3.5 text-left font-sans">
+            <form onSubmit={handleStartTrial} className="p-4 sm:p-5 space-y-3.5 text-left font-sans text-white">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                 
                 {/* Proprietaire Full name */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Nom et Prénoms du Propriétaire *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Nom et Prénoms du Propriétaire *</label>
                   <input 
                     type="text" 
                     required
                     value={ownerName}
                     onChange={(e) => setOwnerName(e.target.value)}
                     placeholder="Ex. Pierre-Marie Dubois"
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E]/45 border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   />
                 </div>
 
                 {/* Email address */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Adresse Email *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Adresse Email *</label>
                   <input 
                     type="email" 
                     required
                     value={email}
                     onChange={(e) => setEmail(e.target.value)}
                     placeholder="Ex. p.dubois@votreentreprise.com"
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E]/45 border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   />
                 </div>
 
                 {/* Mot de passe */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Mot de Passe *</label>
-                  <input 
-                    type="password" 
-                    required
-                    value={password}
-                    onChange={(e) => setPassword(e.target.value)}
-                    placeholder="••••••••"
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
-                  />
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Mot de Passe *</label>
+                  <div className="relative">
+                    <input 
+                      type={showPassword ? "text" : "password"} 
+                      required
+                      value={password}
+                      onChange={(e) => setPassword(e.target.value)}
+                      placeholder="••••••••"
+                      className="w-full bg-[#06101E]/45 border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg pl-3 pr-10 py-1.5 text-xs font-bold text-white outline-none"
+                    />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-450 hover:text-white transition-colors cursor-pointer bg-transparent border-none"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
+                  </div>
                 </div>
 
                 {/* Tel number */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Numéro de Téléphone</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Numéro de Téléphone</label>
                   <input 
                     type="tel" 
                     value={phone}
                     onChange={(e) => setPhone(e.target.value)}
                     placeholder="Ex. +228 90 12 34 56"
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E]/45 border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   />
                 </div>
 
                 {/* Pays list selection with West African countries */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Pays d'origine *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Pays d'origine *</label>
                   <select 
                     value={country} 
                     onChange={(e) => setCountry(e.target.value)}
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E] border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   >
                     <option value="Togo">Togo</option>
                     <option value="Bénin">Bénin</option>
@@ -1456,11 +1464,11 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
 
                 {/* Langue list selection */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Langue Préférée *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Langue Préférée *</label>
                   <select 
                     value={language} 
                     onChange={(e) => setLanguage(e.target.value)}
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E] border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   >
                     <option value="Français">Français</option>
                     <option value="English">English (US)</option>
@@ -1471,11 +1479,11 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
 
                 {/* Taille entreprise */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Taille de l'entreprise *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Taille de l'entreprise *</label>
                   <select 
                     value={companySize} 
                     onChange={(e) => setCompanySize(e.target.value)}
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E] border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   >
                     <option value="1-5">1 - 5 employés</option>
                     <option value="10-50">10-50 employés</option>
@@ -1487,38 +1495,38 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
 
                 {/* Nom entreprise */}
                 <div>
-                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-[#0B1F3A]/60 uppercase mb-1">Nom de l'Entreprise / Marque *</label>
+                  <label className="block text-[9px] font-mono tracking-wider font-extrabold text-slate-400 uppercase mb-1">Nom de l'Entreprise / Marque *</label>
                   <input 
                     type="text" 
                     required
                     value={companyName}
                     onChange={(e) => handleCompanyNameChange(e.target.value)}
                     placeholder="Ex. Dubois Hôtel Group"
-                    className="w-full bg-[#F5F7FA] border border-[#0B1F3A]/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-[#0B1F3A] outline-none"
+                    className="w-full bg-[#06101E]/45 border border-white/10 focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] rounded-lg px-3 py-1.5 text-xs font-bold text-white outline-none"
                   />
                 </div>
 
               </div>
 
               {/* DOMAIN GENERATOR ZONE - Compact */}
-              <div className="bg-[#F5F7FA] rounded-xl p-3 border border-[#0B1F3A]/5 space-y-1">
-                <span className="text-[9px] font-mono tracking-wider font-black text-[#0B1F3A]/50 block uppercase">Nom de Domaine d'Entreprise Généré</span>
-                <div className="flex items-center gap-2 bg-white px-3 py-2 rounded-lg border border-[#0B1F3A]/5 font-mono text-xs text-[#0B1F3A] shadow-sm">
+              <div className="bg-white/5 rounded-xl p-3 border border-white/10 space-y-1">
+                <span className="text-[9px] font-mono tracking-wider font-black text-slate-400 block uppercase">Nom de Domaine d'Entreprise Généré</span>
+                <div className="flex items-center gap-2 bg-[#06101E] px-3 py-2 rounded-lg border border-white/10 font-mono text-xs text-white shadow-sm">
                   <Globe className="h-4 w-4 text-[#FF7A00]" />
                   <span className="font-extrabold text-[#FF7A00] select-all">{customSubdomain || "xxx"}</span>
-                  <span className="font-black text-[#0B1F3A]">.glabtech.com</span>
+                  <span className="font-black text-white">.glabtech.com</span>
                 </div>
-                <p className="text-[8px] text-[#0B1F3A]/45 leading-relaxed font-semibold">
-                  * Votre domaine d'essai sera configuré au format de liane SSO <code className="bg-white px-1">xxx.glabtech.com/trial</code> dès approbation par l'administrateur.
+                <p className="text-[8px] text-slate-450 leading-relaxed font-semibold">
+                  * Votre domaine d'essai sera configuré au format de liane SSO <code className="bg-[#06101E] px-1 font-mono text-[9px] text-[#FF7A00]">xxx.glabtech.com/trial</code> dès approbation par l'administrateur.
                 </p>
               </div>
 
               {/* Action feet - Compact */}
-              <div className="flex justify-between items-center pt-1.5 gap-3">
+              <div className="flex justify-between items-center pt-1.5 gap-3 font-mono">
                 <button 
                   type="button" 
                   onClick={() => setIsWizardOpen(false)}
-                  className="px-4 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 text-xs font-black rounded-lg transition-all cursor-pointer border-0"
+                  className="px-4 py-2 bg-white/10 hover:bg-white/20 text-slate-200 text-xs font-black rounded-lg transition-all cursor-pointer border-0"
                 >
                   Annuler
                 </button>

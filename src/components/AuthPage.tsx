@@ -13,7 +13,9 @@ import {
   ChevronLeft, 
   Fingerprint, 
   Clock, 
-  AlertCircle
+  AlertCircle,
+  Eye,
+  EyeOff
 } from "lucide-react";
 import { PortalUser, UserRole } from "../types";
 
@@ -33,6 +35,7 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
   const [tenant, setTenant] = useState("GLABTECH HQ (Europe)");
   const [role, setRole] = useState<UserRole>("Global Owner");
   const [verificationCode, setVerificationCode] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   
   // UI Simulators
   const [isLoading, setIsLoading] = useState(false);
@@ -303,13 +306,20 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
                   <div className="relative">
                     <Lock className="absolute left-3.5 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400" />
                     <input 
-                      type="password" 
+                      type={showPassword ? "text" : "password"} 
                       required
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       placeholder="••••••••"
-                      className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-4 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] transition-colors"
+                      className="w-full bg-white/[0.02] border border-white/10 rounded-xl pl-10 pr-10 py-3 text-xs text-white placeholder-slate-500 focus:outline-none focus:border-[#FF7A00] focus:ring-1 focus:ring-[#FF7A00] transition-colors"
                     />
+                    <button
+                      type="button"
+                      onClick={() => setShowPassword(!showPassword)}
+                      className="absolute right-3.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-white transition-colors cursor-pointer"
+                    >
+                      {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                    </button>
                   </div>
                 </div>
 

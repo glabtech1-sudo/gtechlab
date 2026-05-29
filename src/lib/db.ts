@@ -9,7 +9,7 @@ let prismaInstance: PrismaClient | null = null;
  */
 export function getPrismaClient(): PrismaClient {
   if (!prismaInstance) {
-    const dbUrl = process.env.DATABASE_URL || (import.meta as any).env?.VITE_DATABASE_URL;
+    const dbUrl = process.env.DATABASE_URL || process.env.VITE_DATABASE_URL;
     
     if (!dbUrl) {
       console.warn(

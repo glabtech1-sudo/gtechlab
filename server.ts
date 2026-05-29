@@ -62,6 +62,24 @@ function getGeminiClient(): GoogleGenAI | null {
 // IN-MEMORY LIVE STATE DB FOR GLABTECH ARCHITECTURE (Odoo/HubSpot/Zoho alternative)
 let managedApps = [
   {
+    id: "glab-aistudio-connector",
+    name: "G-AISTUDIO CONNECTOR",
+    description: "Connecteur bidirectionnel et pont d'intégration raccordé en temps réel à l'Applet Google AI Studio (ID: d244b68b-4792-460f-a75e-3a02fdaacd42). Idéal pour automatiser des workflows intelligents d'IA.",
+    category: "Custom" as const,
+    url: "https://ai.studio",
+    status: "online" as const,
+    version: "v1.0.0",
+    icon: "Sparkles",
+    ping: 8,
+    activeUsers: 1,
+    apiRequestsToday: 1540,
+    ssoConnected: true,
+    ssoClientId: "client_id_aistudio_d244b68b",
+    ssoClientSecret: "sec_aistudio_e478aa92e21b0dc5",
+    lastSync: new Date().toISOString(),
+    recordsCount: 16,
+  },
+  {
     id: "glab-hotel",
     name: "G-HOTEL",
     description: "hotel.glabtech.com - Solution complète de gestion hôtelière : réservations de chambres, conciergerie, plannings de nuitées et facturation automatisée.",
@@ -492,12 +510,14 @@ app.post("/api/apps/:id/sync", (req, res) => {
   securityLogs.unshift({
     id: `log-${Date.now()}`,
     timestamp: new Date().toISOString(),
-    event: "Synchronisation Manuelle Déclenchée",
+    event: id.includes("aistudio") ? "Handshake SSO AI Studio" : "Synchronisation Manuelle Déclenchée",
     user: "glabtech1@gmail.com",
     app: id,
     ip: "109.12.98.24",
     status: "success" as const,
-    details: "Mise à jour du schéma PostgreSQL via Prisma ORM achevée avec succès."
+    details: id.includes("aistudio")
+      ? "Liaison asymétrique et négociation de clés réussies avec l'Applet ID d244b68b-4792-460f-a75e-3a02fdaacd42 de Google AI Studio."
+      : "Mise à jour du schéma PostgreSQL via Prisma ORM achevée avec succès."
   });
 
   res.json(managedApps[appIndex]);
