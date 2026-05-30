@@ -29,13 +29,19 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
   const [mode, setMode] = useState<"login" | "register" | "forgot" | "verify">(initialMode);
   
   // Form Inputs
-  const [email, setEmail] = useState("anges.gildas@gmail.com");
-  const [password, setPassword] = useState("••••••••");
-  const [name, setName] = useState("Anges Gildas");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [name, setName] = useState("");
   const [tenant, setTenant] = useState("GLABTECH HQ (Europe)");
   const [role, setRole] = useState<UserRole>("Global Owner");
   const [verificationCode, setVerificationCode] = useState("");
   const [showPassword, setShowPassword] = useState(false);
+  
+  // Check if registration is allowed (managed in SaaS settings)
+  const [allowRegistration, setAllowRegistration] = useState<boolean>(() => {
+    const stored = localStorage.getItem("glab_allow_registration");
+    return stored === "true";
+  });
   
   // UI Simulators
   const [isLoading, setIsLoading] = useState(false);
@@ -56,6 +62,12 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
     }
     return () => clearInterval(timer);
   }, [mode, countdown]);
+
+  useEffect(() => {
+    if (mode === "register" && !allowRegistration) {
+      setMode("login");
+    }
+  }, [mode, allowRegistration]);
 
   // Generate real structure-like JWT
   const generateSimulatedTokens = (userEmail: string, userRole: string, org: string) => {
@@ -250,23 +262,18 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
                 <span className="px-2.5 py-0.5 rounded-full text-[9px] font-mono tracking-widest text-[#FF7A00] bg-[#FF7A00]/10 border border-[#FF7A00]/20 font-bold uppercase inline-block">
                   FÉDÉRATION SECURE SSO
                 </span>
-                <h2 className="text-2xl font-black tracking-tight text-white font-sans">Connexion à G-LAB</h2>
-                <p className="text-xs text-slate-400">Identifiez-vous pour accéder aux 6 applications de gestion.</p>
+                <h2 className="text-2xl font-black tracking-tight text-white font-sans">Connexion SaaS</h2>
+                <p className="text-xs text-slate-400">Identifiez-vous pour accéder a la gestion du saas.</p>
               </div>
 
               {/* OAuth Google Button */}
               <button 
                 type="button"
-                onClick={handleGoogleOauthSimulator}
-                disabled={isOauthLoading || isLoading}
-                className="w-full bg-white/5 hover:bg-white/10 border border-white/10 rounded-xl py-3 text-xs font-bold text-slate-200 hover:text-white transition-all cursor-pointer flex items-center justify-center gap-2"
+                disabled={true}
+                className="w-full bg-white/5 border border-white/10 rounded-xl py-3 text-xs font-bold text-slate-400 flex items-center justify-center gap-2 opacity-50 cursor-not-allowed"
               >
-                {isOauthLoading ? (
-                  <RefreshCw className="h-4 w-4 animate-spin text-slate-400" />
-                ) : (
-                  <Chrome className="h-4 w-4 text-[#FF7A00]" />
-                )}
-                <span>Continuer avec Google Workspace</span>
+                <Chrome className="h-4 w-4 text-slate-500" />
+                <span>Continuer avec Google Workspace (Désactive)</span>
               </button>
 
               <div className="flex items-center gap-2 text-slate-500 text-[10px] font-mono justify-center">
@@ -341,15 +348,23 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
               </form>
 
               {/* Bottom switch mode */}
-              <div className="text-center pt-2">
-                <span className="text-xs text-slate-400">Nouveau sur G-LAB TECH ? </span>
-                <button
-                  onClick={() => setMode("register")}
-                  className="text-xs text-[#FF7A00] font-bold hover:underline"
-                >
-                  Créer un compte principal
-                </button>
-              </div>
+              {allowRegistration ? (
+                <div className="text-center pt-2">
+                  <span className="text-xs text-slate-400">Nouveau sur G-LAB TECH ? </span>
+                  <button
+                    onClick={() => setMode("register")}
+                    className="text-xs text-[#FF7A00] font-bold hover:underline"
+                  >
+                    Créer un compte principal
+                  </button>
+                </div>
+              ) : (
+                <div className="text-center pt-2">
+                  <span className="text-[10px] text-slate-500 font-mono">
+                    🛡️ Création de compte principal désactivée par les directives SecOps
+                  </span>
+                </div>
+              )}
             </div>
           )}
 
@@ -567,48 +582,7 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
 
         </div>
 
-        {/* Dynamic Interactive Drawer toggle displaying generated JWT Token details */}
-        <div className="w-full max-w-md mt-4">
-          <button 
-            onClick={() => setShowTokenDetails(!showTokenDetails)}
-            className="w-full flex items-center justify-between text-[11px] font-mono font-bold text-slate-450 hover:text-white bg-white/5 px-4 py-3 rounded-xl border border-white/5 transition-colors focus:outline-none"
-          >
-            <div className="flex items-center gap-1.5">
-              <Fingerprint className="h-3.5 w-3.5 text-[#FF7A00]" />
-              <span>[SIMULATEUR INTEGRATION APIS / DÉTAILS JWT]</span>
-            </div>
-            <span className="text-slate-550 font-black">{showTokenDetails ? "MASQUER" : "AFFICHER (RECOMMANDÉ)"}</span>
-          </button>
-
-          {showTokenDetails && (
-            <div className="mt-2 bg-slate-900/80 border border-white/5 rounded-xl p-4 font-mono text-[10px] space-y-3 text-slate-350 animate-motion-in">
-              <div>
-                <span className="text-[#FF7A00] font-bold uppercase tracking-wider block mb-1">JSON WEB TOKEN SSO SIGNÉ (RS256) :</span>
-                <div className="bg-black/45 p-2 rounded border border-white/5 text-[9px] break-all leading-relaxed text-slate-400">
-                  {simulatedJwt}
-                </div>
-              </div>
-
-              <div className="grid grid-cols-2 gap-3 pt-2 border-t border-white/5">
-                <div>
-                  <span className="text-indigo-400 font-bold block">REFRESH TOKEN :</span>
-                  <code className="text-[9px] font-mono bg-black/45 px-1.5 py-0.5 rounded break-all block mt-1 border border-white/5 text-slate-400">
-                    {simulatedRefreshToken}
-                  </code>
-                </div>
-
-                <div>
-                  <span className="text-emerald-400 font-bold block">SÉCURITÉ DE SESSION :</span>
-                  <div className="text-[9px] text-slate-400 space-y-0.5 mt-1 leading-normal">
-                    <p>● Statut: <span className="text-emerald-500 font-bold">Sécurisée</span></p>
-                    <p>● Type: <span className="font-bold">OAuth Google / JWT ID</span></p>
-                    <p>● Rôle attribué: <span className="text-amber-500 font-bold">{role}</span></p>
-                  </div>
-                </div>
-              </div>
-            </div>
-          )}
-        </div>
+        {/* Simulated APIs component integration removed per security restrictions */}
 
       </main>
 

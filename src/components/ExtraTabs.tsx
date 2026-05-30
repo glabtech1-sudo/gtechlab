@@ -3976,6 +3976,9 @@ export function SettingsTab({
   
   // Custom states
   const [mfa, setMfa] = useState(user.mfaEnabled);
+  const [allowRegistration, setAllowRegistration] = useState(() => {
+    return localStorage.getItem("glab_allow_registration") === "true";
+  });
   const [rsaKey, setRsaKey] = useState("RSA_PUBLIC_KEY_SHA256_GLABTECH_SECURE_PORTAL_2026_PROD_F83B");
   const [lockMinutes, setLockMinutes] = useState(30);
   const [activeTheme, setActiveTheme] = useState("slate");
@@ -4564,7 +4567,7 @@ export function SettingsTab({
                     <Smartphone className="h-5.5 w-5.5 text-indigo-500 flex-shrink-0 mt-0.5" />
                     <div>
                       <h5 className="font-extrabold text-xs text-slate-900">{t.mfaLabel}</h5>
-                      <p className="text-[10px] text-slate-500 mt-0.5">{t.mfaDesc}</p>
+                      <p className="text-[10px] text-slate-550 mt-0.5">{t.mfaDesc}</p>
                     </div>
                   </div>
 
@@ -4581,6 +4584,46 @@ export function SettingsTab({
                     }`}
                   >
                     {mfa ? t.mfaActive : t.mfaInactive}
+                  </button>
+                </div>
+
+                {/* SaaS Registration Control */}
+                <div className="flex items-center justify-between p-4 border border-slate-150 bg-[#F8FAF9]/40 rounded-xl shadow-sm">
+                  <div className="flex gap-3">
+                    <Users className="h-5.5 w-5.5 text-[#FF7A00] flex-shrink-0 mt-0.5" />
+                    <div>
+                      <h5 className="font-extrabold text-xs text-slate-900">
+                        {language === "fr" ? "Autoriser l'inscription de comptes principaux" : "Allow primary account registration"}
+                      </h5>
+                      <p className="text-[10px] text-slate-500 mt-0.5 leading-normal">
+                        {language === "fr"
+                          ? "Ajoute l'option de création d'organisation sur le formulaire d'authentification principal."
+                          : "Expose the create organization option directly on the primary credentials gateway."}
+                      </p>
+                    </div>
+                  </div>
+
+                  <button
+                    onClick={() => {
+                      const updated = !allowRegistration;
+                      setAllowRegistration(updated);
+                      localStorage.setItem("glab_allow_registration", String(updated));
+                      triggerNotification(
+                        language === "fr"
+                          ? `Création de comptes désormais ${updated ? "activée" : "désactivée"}`
+                          : `Account registration is now ${updated ? "enabled" : "disabled"}`,
+                        "success"
+                      );
+                    }}
+                    className={`px-3 py-1.5 rounded-full text-[10px] font-mono font-black border transition-all cursor-pointer ${
+                      allowRegistration
+                        ? "bg-emerald-55 text-emerald-700 border-emerald-250 hover:bg-emerald-100/10"
+                        : "bg-slate-100 text-slate-500 border-slate-202 hover:bg-slate-200/50"
+                    }`}
+                  >
+                    {allowRegistration 
+                      ? (language === "fr" ? "AUTORISÉ" : "ALLOWED")
+                      : (language === "fr" ? "DÉSACTIVÉ / BLOQUÉ" : "DISABLED / BLOCKED")}
                   </button>
                 </div>
 
