@@ -296,7 +296,7 @@ export function OrganizationsTab({
           <div className="p-4 border border-dashed border-slate-200 rounded-xl flex items-center justify-between gap-4">
             <div>
               <h5 className="text-xs font-bold text-slate-850">Clé asymétrique de synchronisation</h5>
-              <p className="text-[10px] text-slate-450 leading-normal mt-0.5">Utilisée pour signer les transactions envoyées du tenant vers les API de glabtech.com.</p>
+              <p className="text-[10px] text-slate-450 leading-normal mt-0.5">Utilisée pour signer les transactions envoyées du tenant vers les API de glabeboutique.com.</p>
             </div>
             <button 
               onClick={handleRegenRsa}
@@ -565,7 +565,7 @@ export function BillingTab({
       badgeClass: "bg-blue-50 text-blue-700 border-blue-100",
       enabled: true,
       clientId: "pay_client_id_live_77c2e816a",
-      receiverEmail: "paypal-billing@glabtech.com",
+      receiverEmail: "paypal-billing@glabeboutique.com",
       fields: [
         { key: "clientId", label: "ID d'intégration Client (PayPal)", type: "text" },
         { key: "receiverEmail", label: "Courriel PayPal du bénéficiaire", type: "text" }
@@ -837,7 +837,7 @@ export function BillingTab({
               
               <h4 className="font-extrabold text-lg mt-3">Passerelle : {checkoutGateway.name}</h4>
               <p className="text-xs text-white/80 mt-1 leading-normal">
-                Module de conformité Multi-Tenant de glabtech.com raccordement e-commerce.
+                Module de conformité Multi-Tenant de glabeboutique.com raccordement e-commerce.
               </p>
             </div>
 
@@ -1116,7 +1116,7 @@ export function BillingTab({
                   <p className="text-[11px] text-slate-500 mt-1">
                     {legalCompanyAddress}<br />
                     Matricule : {taxIdNumber}<br />
-                    Courriel : invoice-sso@glabtech.com
+                    Courriel : invoice-sso@glabeboutique.com
                   </p>
                 </div>
                 
@@ -1149,7 +1149,7 @@ export function BillingTab({
                         <td className="p-3">
                           <strong className="text-slate-900 block font-bold">Licence d'usage SaaS : {selectedInvoice.plan}</strong>
                           <span className="text-[10.2px] text-slate-400 leading-normal mt-0.5 block font-medium">
-                            Accès unifié aux 6 microservices de glabtech.com avec synchronisation PostgreSQL.
+                            Accès unifié aux 6 microservices de glabeboutique.com avec synchronisation PostgreSQL.
                           </span>
                         </td>
                         <td className="text-center p-3 font-mono">{currentTenant.users.length} Sièges</td>
@@ -1203,8 +1203,8 @@ export function BillingTab({
               </div>
 
               <div className="border-t border-slate-100 pt-5 text-center text-[10.5px] font-mono text-slate-450 leading-snug">
-                <p>Facture générée numériquement par glabtech.com sous signature de hachage SHA-256.</p>
-                <p className="mt-1">Pour toute question sur la réconciliation des comptes, veuillez contacter support@glabtech.com.</p>
+                <p>Facture générée numériquement par glabeboutique.com sous signature de hachage SHA-256.</p>
+                <p className="mt-1">Pour toute question sur la réconciliation des comptes, veuillez contacter support@glabeboutique.com.</p>
               </div>
 
             </div>
@@ -1699,7 +1699,7 @@ export function BillingTab({
                 Ledger Transactionnel Comptroller
               </h4>
               <p className="text-[11px] text-slate-450 font-semibold leading-normal mt-0.5">
-                Historique auditable de l'ensemble des mouvements financiers perçus via les intégrations de glabtech.com.
+                Historique auditable de l'ensemble des mouvements financiers perçus via les intégrations de glabeboutique.com.
               </p>
             </div>
             
@@ -2397,7 +2397,7 @@ export function AnalyticsTab({ metrics, apps }: AnalyticsTabProps) {
           <div className="border border-slate-100 rounded-2xl p-5 bg-slate-50/50">
             <h4 className="font-bold text-xs text-slate-950 mb-4 flex items-center gap-1">
               <RefreshCw className="h-3.5 w-3.5 text-slate-400" />
-              Réponse Ping par Service unifié (glabtech.com)
+              Réponse Ping par Service unifié (glabeboutique.com)
             </h4>
             
             <div className="space-y-3.5">
@@ -2457,7 +2457,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
       name: "Courriel SMTP Émetteur",
       host: "smtp.glablab.ae",
       port: "587",
-      username: "notifications@glabtech.com",
+      username: "notifications@glabeboutique.com",
       senderName: "Glablab SecOps Gateway",
       ssl: true,
       enabled: true,
@@ -2490,7 +2490,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
 
   // Notification Tester Inputs & States
   const [testChannel, setTestChannel] = useState<"email" | "push" | "sms" | "whatsapp">("email");
-  const [testRecipient, setTestRecipient] = useState(user?.email || "coordination@glabtech.com");
+  const [testRecipient, setTestRecipient] = useState(user?.email || "coordination@glabeboutique.com");
   const [testTitle, setTestTitle] = useState("Alerte de sécurité SSO - Profil Sensible");
   const [testBody, setTestBody] = useState("Un accès privilégié a été authentifié depuis un nouveau sous-réseau IP (Dakar, Sénégal). Rotation RSA conseillée.");
   
@@ -2506,7 +2506,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
       id: "log-1",
       date: "Aujourd'hui, 11:42",
       channel: "email",
-      recipient: "directeur.audit@glabtech.com",
+      recipient: "directeur.audit@glabeboutique.com",
       title: "Rapport d'audit de sécurité hebdomadaire",
       gateway: "SMTP Server",
       status: "success",
@@ -2550,7 +2550,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
       title: "Bienvenue sur le Hub d'Intégration SaaS",
       gateway: "SMTP Server",
       status: "success",
-      metadata: { template: "welcome_corporate", sender: "support@glabtech.com" }
+      metadata: { template: "welcome_corporate", sender: "support@glabeboutique.com" }
     }
   ]);
 
@@ -2587,7 +2587,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
   const handleChannelSwitch = (channelType: "email" | "push" | "sms" | "whatsapp") => {
     setTestChannel(channelType);
     if (channelType === "email") {
-      setTestRecipient(user?.email || "coordination@glabtech.com");
+      setTestRecipient(user?.email || "coordination@glabeboutique.com");
     } else if (channelType === "push") {
       setTestRecipient("Toutes les sessions rattachées (Navigateur)");
     } else if (channelType === "whatsapp") {
@@ -2776,7 +2776,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
             Centre Global de Notifications
           </h2>
           <p className="text-xs text-slate-405 leading-relaxed max-w-2xl font-normal">
-            Gérez de manière centralisée les workflows de communication de glabtech.com. Configurez vos passerelles télécoms sécurisées, simulez des flux en temps réel et réconciliez les traces de livraison.
+            Gérez de manière centralisée les workflows de communication de glabeboutique.com. Configurez vos passerelles télécoms sécurisées, simulez des flux en temps réel et réconciliez les traces de livraison.
           </p>
         </div>
 
@@ -3013,8 +3013,8 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
             
             <div className="space-y-2.5">
               {[
-                { type: "security", title: "Génération de jeton d'administrateur SSO centralisé", text: "Clé RSA rotation opérée avec succès sous la directive IAM de glabtech.com", count: "À l'instant", status: "success" },
-                { type: "warn", title: "Baisse de performance réseau sur erp.glabtech.com (114ms)", text: "Le service d'orchestration signale une réponse retardée sur le serveur API.", count: "Il y a 10 mins", status: "warn" },
+                { type: "security", title: "Génération de jeton d'administrateur SSO centralisé", text: "Clé RSA rotation opérée avec succès sous la directive IAM de glabeboutique.com", count: "À l'instant", status: "success" },
+                { type: "warn", title: "Baisse de performance réseau sur erp.glabeboutique.com (114ms)", text: "Le service d'orchestration signale une réponse retardée sur le serveur API.", count: "Il y a 10 mins", status: "warn" },
                 { type: "info", title: "Workflow G-Link validé : 'Admission Hopital vers ERP'", text: "Intégration et réconciliation asynchrone achevée sans erreurs critiques.", count: "Il y a 1 heure", status: "info" }
               ].map((a, i) => (
                 <div key={i} className="p-4 border border-slate-150 lg:border-slate-100 rounded-xl flex items-start gap-4 bg-slate-50/45 hover:bg-slate-50 transition-colors">
@@ -3449,7 +3449,7 @@ export function NotificationsTab({ user, onNotify }: { user?: PortalUser, onNoti
                 type="text"
                 value={testRecipient}
                 onChange={(e) => setTestRecipient(e.target.value)}
-                placeholder={testChannel === "email" ? "Ex: support@glabtech.com" : testChannel === "push" ? "Sujet navigateur" : "Ex: +22177 XXXXXXX ou +22899XXXXXX"}
+                placeholder={testChannel === "email" ? "Ex: support@glabeboutique.com" : testChannel === "push" ? "Sujet navigateur" : "Ex: +22177 XXXXXXX ou +22899XXXXXX"}
                 className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-3 focus:outline-none focus:bg-white text-xs font-mono font-bold text-slate-800"
               />
             </div>
@@ -6222,7 +6222,7 @@ export function ApprovalsTab({
                 </div>
 
                 <div className="bg-white/80 border border-slate-100 rounded-lg p-2.5 my-3 text-[11px] text-slate-600 font-medium space-y-1">
-                  <div><strong>Sous-domaine :</strong> <span className="font-mono text-[#0B1F3A] text-[11.5px] font-bold">{req.subdomain}.glabtech.com</span></div>
+                  <div><strong>Sous-domaine :</strong> <span className="font-mono text-[#0B1F3A] text-[11.5px] font-bold">{req.subdomain}.glabeboutique.com</span></div>
                   <div><strong>Téléphone :</strong> {req.phone || "Non renseigné"}</div>
                   <div><strong>Taille entreprise :</strong> {req.companySize} • <strong>Pays :</strong> {req.country} ({req.language})</div>
                 </div>

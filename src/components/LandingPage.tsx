@@ -113,7 +113,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "crm.glabtech.com"
+      domain: "crm.glabeboutique.com"
     },
     {
       id: "resto",
@@ -124,7 +124,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "resto.glabtech.com"
+      domain: "resto.glabeboutique.com"
     },
     {
       id: "hotel",
@@ -135,7 +135,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "hotel.glabtech.com"
+      domain: "hotel.glabeboutique.com"
     },
     {
       id: "erp",
@@ -146,7 +146,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "erp.glabtech.com"
+      domain: "erp.glabeboutique.com"
     },
     {
       id: "market",
@@ -157,7 +157,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "market.glabtech.com"
+      domain: "market.glabeboutique.com"
     },
     {
       id: "travel",
@@ -168,7 +168,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "travel.glabtech.com"
+      domain: "travel.glabeboutique.com"
     },
     {
       id: "hr",
@@ -179,7 +179,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "rh.glabtech.com"
+      domain: "rh.glabeboutique.com"
     },
     {
       id: "project",
@@ -190,7 +190,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "project.glabtech.com"
+      domain: "project.glabeboutique.com"
     },
     {
       id: "secops",
@@ -201,7 +201,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "secops.glabtech.com"
+      domain: "secops.glabeboutique.com"
     },
     {
       id: "marketing",
@@ -212,7 +212,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "marketing.glabtech.com"
+      domain: "marketing.glabeboutique.com"
     },
     {
       id: "billing",
@@ -223,7 +223,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "invoices.glabtech.com"
+      domain: "invoices.glabeboutique.com"
     },
     {
       id: "chat",
@@ -234,7 +234,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
       colorClass: "text-[#FF7A00]",
       bgColorClass: "bg-[#FF7A00]/5 border-[#FF7A00]/15",
       accentColor: "#FF7A00",
-      domain: "discuss.glabtech.com"
+      domain: "discuss.glabeboutique.com"
     }
   ];
 
@@ -303,7 +303,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
   const tabData = {
     hotel: {
       title: "G-LAB Hôtel & Hébergement",
-      domain: "hotel.glabtech.com",
+      domain: "hotel.glabeboutique.com",
       badge: "Système de Réservation Intégré (PMS)",
       desc: "Gérez l'attribution des chambres, les check-ins/check-outs de vos clients, les plannings d'entretien ménager et collectez des paiements instantanés.",
       features: [
@@ -318,7 +318,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
     },
     resto: {
       title: "G-LAB Resto & POS",
-      domain: "resto.glabtech.com",
+      domain: "resto.glabeboutique.com",
       badge: "Caisse & Point de Vente Restaurant",
       desc: "Prise de commande sur tablette, plan de salle graphique interactif, transmission cuisine instantanée et division de notes de facturation.",
       features: [
@@ -333,7 +333,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
     },
     crm: {
       title: "G-LAB Pipeline Ventes & CRM",
-      domain: "crm.glabtech.com",
+      domain: "crm.glabeboutique.com",
       badge: "Suivi des opportunités clients de l'élite",
       desc: "Suivez vos prospects à travers des phases claires, planifiez des relances et automatisez vos propositions commerciales pour conclure plus de deals.",
       features: [
@@ -348,7 +348,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
     },
     erp: {
       title: "G-LAB ERP Comptabilité & Finance",
-      domain: "erp.glabtech.com",
+      domain: "erp.glabeboutique.com",
       badge: "Grand livre & écritures multi-applications",
       desc: "Rapprochez automatiquement vos transactions bancaires, préparez votre bilan, suivez vos amortissements et générez vos déclarations fiscales.",
       features: [
@@ -1514,10 +1514,10 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
                 <div className="flex items-center gap-2 bg-[#06101E] px-3 py-2 rounded-lg border border-white/10 font-mono text-xs text-white shadow-sm">
                   <Globe className="h-4 w-4 text-[#FF7A00]" />
                   <span className="font-extrabold text-[#FF7A00] select-all">{customSubdomain || "xxx"}</span>
-                  <span className="font-black text-white">.glabtech.com</span>
+                  <span className="font-black text-white">.glabeboutique.com</span>
                 </div>
                 <p className="text-[8px] text-slate-450 leading-relaxed font-semibold">
-                  * Votre domaine d'essai sera configuré au format de liane SSO <code className="bg-[#06101E] px-1 font-mono text-[9px] text-[#FF7A00]">xxx.glabtech.com/trial</code> dès approbation par l'administrateur.
+                  * Votre domaine d'essai sera configuré au format de liane SSO <code className="bg-[#06101E] px-1 font-mono text-[9px] text-[#FF7A00]">xxx.glabeboutique.com/trial</code> dès approbation par l'administrateur.
                 </p>
               </div>
 
@@ -1562,7 +1562,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
               <div className="flex-1 max-w-xl mx-auto flex items-center bg-black/45 border border-white/10 rounded-xl px-4 py-1.5 text-slate-200 font-mono text-[11px] gap-2">
                 <Lock className="h-3.5 w-3.5 text-emerald-400" />
                 <span className="text-emerald-400 font-bold">https://</span>
-                <span className="text-white font-extrabold text-[12px]">{customSubdomain}.glabtech.com</span>
+                <span className="text-white font-extrabold text-[12px]">{customSubdomain}.glabeboutique.com</span>
                 <span className="text-white/40">/trial</span>
               </div>
 
@@ -1718,7 +1718,7 @@ export default function LandingPage({ onEnterApp }: LandingPageProps) {
                         <span className="text-[10px] bg-[#FF7A00]/10 text-[#FF7A00] px-2 py-0.5 rounded font-bold uppercase">Mise à jour directe</span>
                       </div>
                       <p className="text-[11px] text-slate-500 mb-3 leading-relaxed">
-                        Chaque élément de facturation fictif injecté ci-dessous sera immédiatement répercuté sous l'adresse <code className="bg-white px-1 font-bold text-[#FF7A00] font-mono">{customSubdomain}.glabtech.com</code> et synchronisera un audit dans la gestion SSO d'identité.
+                        Chaque élément de facturation fictif injecté ci-dessous sera immédiatement répercuté sous l'adresse <code className="bg-white px-1 font-bold text-[#FF7A00] font-mono">{customSubdomain}.glabeboutique.com</code> et synchronisera un audit dans la gestion SSO d'identité.
                       </p>
                       
                       <div className="flex gap-4">

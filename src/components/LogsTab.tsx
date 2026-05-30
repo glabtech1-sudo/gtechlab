@@ -49,7 +49,7 @@ export default function LogsTab({ logs, onRefresh, onNotify }: LogsTabProps) {
             <Terminal className="h-4.5 w-4.5 text-brand-orange" /> Journal SecOps & Audit de Conformité Central
           </h3>
           <p className="text-xs text-slate-500 mt-2.5 leading-relaxed font-medium">
-            Chaque action d'authentification ou synchronisation sur glabtech.com est historisée de manière immuable.
+            Chaque action d'authentification ou synchronisation sur glabeboutique.com est historisée de manière immuable.
           </p>
         </div>
 

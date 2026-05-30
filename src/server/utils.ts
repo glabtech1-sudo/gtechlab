@@ -24,7 +24,7 @@ export function generateToken(payload: object, durationSeconds = 3600): string {
   const fullPayload = { 
     ...payload, 
     exp,
-    iss: "https://auth.glabtech.com",
+    iss: "https://auth.glabeboutique.com",
     aud: "glab-federated-sso"
   };
   
@@ -73,7 +73,7 @@ export function verifyToken(token: string): any {
     const payload = JSON.parse(payloadStr);
     
     // Check validation claims (Issuer & Audience checks)
-    if (payload.iss !== "https://auth.glabtech.com" || payload.aud !== "glab-federated-sso") {
+    if (payload.iss !== "https://auth.glabeboutique.com" || payload.aud !== "glab-federated-sso") {
       console.warn("SECURITY WARNING: Invalid token claim properties.");
       return null;
     }

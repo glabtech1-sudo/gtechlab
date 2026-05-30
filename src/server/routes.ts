@@ -27,7 +27,7 @@ apiGatewayRouter.post("/auth/login", async (req: Request, res: Response) => {
     const user = await DbService.getUserByEmail(email);
     if (!user) {
       // Simulate/Autoregister Glabtech Owner on very first attempt to ease demo onboarding!
-      if (email === "anges.gildas@gmail.com" || email === "glabtech1@gmail.com" || email === "admin@glabtech.com") {
+      if (email === "anges.gildas@gmail.com" || email === "glabtech1@gmail.com" || email === "admin@glabeboutique.com") {
         const orgs = await DbService.getOrganizations();
         const defaultOrg = orgs[0] || { id: "org-glabtech-hq", name: "GLABTECH HQ (Europe)" };
         
@@ -438,7 +438,7 @@ apiGatewayRouter.post("/applications", authenticate, requirePermissions(["apps",
       name,
       description: description || "Pont de communication SaaS unifié",
       category: category as any,
-      url: url || `https://${id}.glabtech.com`,
+      url: url || `https://${id}.glabeboutique.com`,
       status: "online" as const,
       version: version || "v1.0.0",
       icon: icon || "Layers",

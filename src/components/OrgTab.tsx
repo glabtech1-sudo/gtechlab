@@ -147,9 +147,9 @@ export default function OrgTab({ user, setUser, onNotify }: OrgTabProps) {
             <div className="border border-slate-100 rounded-2xl overflow-hidden divide-y divide-slate-55 bg-[#F5F7FA]/30">
               {[
                 { name: "Glabtech Admin", email: "glabtech1@gmail.com", role: "Global Owner", access: "Toutes subdomains", status: "Actif" },
-                { name: "Marc Dupont", email: "m.dupont@glabtech.com", role: "Manager CRM/Facture", access: "crm.glabtech.com", status: "Actif" },
-                { name: "Sophie Laurent", email: "s.laurent@glabtech.com", role: "Directeur Clinique", access: "hopital.glabtech.com", status: "Actif" },
-                { name: "Yann Dubois", email: "y.dubois@glabtech.com", role: "Technicien POS", access: "resto.glabtech.com", status: "Hors-ligne" },
+                { name: "Marc Dupont", email: "m.dupont@glabeboutique.com", role: "Manager CRM/Facture", access: "crm.glabeboutique.com", status: "Actif" },
+                { name: "Sophie Laurent", email: "s.laurent@glabeboutique.com", role: "Directeur Clinique", access: "hopital.glabeboutique.com", status: "Actif" },
+                { name: "Yann Dubois", email: "y.dubois@glabeboutique.com", role: "Technicien POS", access: "resto.glabeboutique.com", status: "Hors-ligne" },
               ].map((member, i) => (
                 <div key={i} className="p-4.5 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 bg-white">
                   <div>
@@ -271,7 +271,7 @@ export default function OrgTab({ user, setUser, onNotify }: OrgTabProps) {
             {stripeConnected && (
               <div className="bg-brand-blue p-4 rounded-xl border border-white/5 text-[10.5px] text-[#F5F7FA] font-mono space-y-1.5 shadow-inner">
                 <span className="font-bold flex items-center gap-1.5 text-brand-orange">● PASSERELLE STRIPE CONNECTABLE</span>
-                <p className="text-[9.5px] text-slate-300 leading-normal">Trafic redirigé vers : market.glabtech.com pour les facturations clients l'après-midi.</p>
+                <p className="text-[9.5px] text-slate-300 leading-normal">Trafic redirigé vers : market.glabeboutique.com pour les facturations clients l'après-midi.</p>
               </div>
             )}
           </div>

@@ -78,7 +78,7 @@ export default function CopilotDrawer({
       {/* Info indicator regarding context */}
       <div className="bg-[#FF7A00]/5 px-5 py-2.5 border-b border-[#FF7A00]/10 text-[10px] text-brand-orange font-mono flex items-center gap-2 font-black">
         <Info className="h-4 w-4 text-brand-orange flex-shrink-0 animate-pulse" />
-        <span>L'IA analyse vos 6 applications connectées à glabtech.com.</span>
+        <span>L'IA analyse vos 6 applications connectées à glabeboutique.com.</span>
       </div>
 
       {/* Message Stream */}
@@ -123,8 +123,8 @@ export default function CopilotDrawer({
       <div className="px-5 py-3.5 bg-black/15 border-t border-white/10 flex flex-col gap-2">
         <span className="text-[9px] font-mono text-slate-450 uppercase font-black tracking-widest block mb-1">Suggestions rapides</span>
         {[
-          { label: "⚙️ Analyser la latence ERP (14ms)", text: "Fais-moi un rapport détaillé sur le monitoring et les résolutions recommandées pour l'ERP erp.glabtech.com ." },
-          { label: "🔑 Sécurité SSO JWT", text: "Explique l'échange de jetons et la sécurité d'audits SSO entre hotel.glabtech.com et resto.glabtech.com." },
+          { label: "⚙️ Analyser la latence ERP (14ms)", text: "Fais-moi un rapport détaillé sur le monitoring et les résolutions recommandées pour l'ERP erp.glabeboutique.com ." },
+          { label: "🔑 Sécurité SSO JWT", text: "Explique l'échange de jetons et la sécurité d'audits SSO entre hotel.glabeboutique.com et resto.glabeboutique.com." },
           { label: "⚡ Idées d'automatisation G-Link", text: "Propose-moi de nouvelles configurations d'automatisation d'identité multi-tenant pertinentes pour nos applications." }
         ].map((item, idx) => (
           <button

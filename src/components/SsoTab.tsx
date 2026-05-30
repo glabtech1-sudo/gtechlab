@@ -13,7 +13,13 @@ import {
   ShieldAlert,
   Zap,
   RefreshCcw,
-  Timer
+  Timer,
+  ArrowRight,
+  Code2,
+  Play,
+  CheckCircle2,
+  Sparkles,
+  Globe
 } from "lucide-react";
 
 interface SsoTabProps {
@@ -41,6 +47,139 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
   // Trial requests management
   const [trialRequests, setTrialRequests] = useState<any[]>([]);
   const [loadingRequests, setLoadingRequests] = useState(false);
+
+  // Guide d'Intégration & Simulateur states
+  const [activeSdkLanguage, setActiveSdkLanguage] = useState<"node" | "react" | "python">("node");
+  const [sandboxClientId, setSandboxClientId] = useState("client_id_glab_eboutique_prod");
+  const [sandboxRedirectUrl, setSandboxRedirectUrl] = useState("https://ma-boutique-partenaire.com/auth/callback");
+  const [isSimulatingSsoFlow, setIsSimulatingSsoFlow] = useState(false);
+  const [simulatedStep, setSimulatedStep] = useState(0);
+  const [simulatedToken, setSimulatedToken] = useState("");
+
+  const nodeCode = `const express = require('express');
+const jwt = require('jsonwebtoken');
+const app = express();
+
+const GLAB_SSO_PUB_KEY = \`-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Yh...
+-----END PUBLIC KEY-----\`;
+
+app.get('/auth/callback', (req, res) => {
+  const token = req.query.token;
+  if (!token) return res.status(400).send("Jeton SSO manquant.");
+
+  // Valider la signature cryptographique du jeton
+  jwt.verify(token, GLAB_SSO_PUB_KEY, {
+    issuer: 'https://auth.glabeboutique.com',
+    audience: 'glab-federated-sso'
+  }, (err, decoded) => {
+    if (err) return res.status(401).send("Jeton invalide ou corrompu.");
+
+    // Enregistrer la session utilisateur
+    req.session.user = {
+      id: decoded.sub,
+      email: decoded.email,
+      role: decoded.role,
+      organisation: decoded.organization
+    };
+    res.redirect('/dashboard');
+  });
+});`;
+
+  const reactCode = `import { useEffect, useState } from "react";
+
+export function useSsoAuth() {
+  const [user, setUser] = useState(null);
+
+  useEffect(() => {
+    const urlParams = new URLSearchParams(window.location.search);
+    const token = urlParams.get("token");
+
+    if (token) {
+      // Envoyer le jeton à votre serveur backend pour vérification
+      fetch("/api/auth/sso-verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ token })
+      })
+      .then(res => res.json())
+      .then(data => {
+        if (data.success) {
+          setUser(data.user);
+          // Nettoyer l'URL callback
+          window.history.replaceState({}, document.title, window.location.pathname);
+        }
+      });
+    }
+  }, []);
+
+  const loginWithSSO = () => {
+    const clientId = "client_id_glab_eboutique_prod";
+    const redirectUri = window.location.origin + "/auth/callback";
+    window.location.href = \`https://auth.glabeboutique.com/sso?client_id=\${clientId}&redirect_uri=\${redirectUri}\`;
+  };
+
+  return { user, loginWithSSO };
+}`;
+
+  const pythonCode = `from fastapi import FastAPI, HTTPException
+import jwt
+
+app = FastAPI()
+
+SSO_PUB_KEY = """-----BEGIN PUBLIC KEY-----
+MIIBIjANBgkqhkiG9w0BAQEFAAOCAQ8AMIIBCgKCAQEA0Yh...
+-----END PUBLIC KEY-----"""
+
+@app.get("/auth/callback")
+async def sso_callback(token: str = None):
+    if not token:
+        raise HTTPException(status_code=400, detail="Jeton manquant")
+    try:
+        # Décodage et contrôle de validité locale
+        payload = jwt.decode(
+            token, 
+            SSO_PUB_KEY, 
+            algorithms=["RS256"], 
+            audience="glab-federated-sso", 
+            issuer="https://auth.glabeboutique.com"
+        )
+        return {
+            "status": "connected",
+            "user_id": payload.get("sub"),
+            "email": payload.get("email"),
+            "role": payload.get("role")
+        }
+    except jwt.PyJWTError:
+        raise HTTPException(status_code=401, detail="Jeton altéré ou expiré")`;
+
+  const handleRunSimulation = () => {
+    if (!sandboxRedirectUrl.trim()) {
+      onNotify("Veuillez renseigner l'URL de retour de votre application.", "warn");
+      return;
+    }
+    
+    setIsSimulatingSsoFlow(true);
+    setSimulatedStep(1);
+    onNotify("Simulation lancée : Initialisation de la requête SSO...", "info");
+    
+    setTimeout(() => {
+      setSimulatedStep(2);
+      onNotify("Étape 2 : Redirection de l'utilisateur sur auth.glabeboutique.com", "info");
+    }, 1200);
+
+    setTimeout(() => {
+      setSimulatedStep(3);
+      const mockSign = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9." + btoa(JSON.stringify(sampleJwtPayload)).replace(/=/g, "") + ".SignatureValide_SSO_Glab";
+      setSimulatedToken(mockSign);
+      onNotify("Étape 3 : Authentification réussie. Jeton JWT sécurisé généré.", "success");
+    }, 2400);
+
+    setTimeout(() => {
+      setSimulatedStep(4);
+      onNotify("Étape 4 : Redirection réussie avec transmission du jeton !", "success");
+    }, 3600);
+  };
 
   const fetchTrialRequests = async () => {
     setLoadingRequests(true);
@@ -86,14 +225,14 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
   };
 
   const sampleJwtPayload = {
-    iss: "https://auth.glabtech.com",
+    iss: "https://auth.glabeboutique.com",
     sub: "usr_glab_1002bf92",
     aud: "glab-federated-sso",
     name: "Glabtech Admin",
     email: "glabtech1@gmail.com",
     role: selectedRole,
     organization: "GLABTECH HQ (Europe)",
-    allowedDomains: ["glabtech.com", "hotel.glabtech.com", "resto.glabtech.com", "crm.glabtech.com", "erp.glabtech.com", "market.glabtech.com", "hopital.glabtech.com"],
+    allowedDomains: ["glabeboutique.com", "hotel.glabeboutique.com", "resto.glabeboutique.com", "crm.glabeboutique.com", "erp.glabeboutique.com", "market.glabeboutique.com", "hopital.glabeboutique.com"],
     exp: Math.floor(Date.now() / 1000) + 3600,
     iat: Math.floor(Date.now() / 1000)
   };
@@ -196,9 +335,255 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
           <Fingerprint className="h-5 w-5 text-brand-orange animate-pulse" /> Architecture SSO unifiée et Identité Fédérée par Jeton Crypté
         </h3>
         <p className="text-xs text-slate-500 mt-2.5 leading-relaxed font-medium">
-          Lorsque vos collaborateurs naviguent de <code className="bg-[#F5F7FA] text-brand-blue font-bold px-1.5 py-0.5 rounded font-mono border border-brand-blue/5">hotel.glabtech.com</code> à{" "}
-          <code className="bg-[#F5F7FA] text-brand-blue font-bold px-1.5 py-0.5 rounded font-mono border border-brand-blue/5">hopital.glabtech.com</code>, GLABTECH utilise un protocole d'échange de jetons web décentralisés (JWT). Cela garantit une expérience utilisateur fluide sans réauthentification répétée, similaire aux architectures avancées de Monday, Notion ou Zoho portals.
+          Lorsque vos collaborateurs naviguent de <code className="bg-[#F5F7FA] text-brand-blue font-bold px-1.5 py-0.5 rounded font-mono border border-brand-blue/5">hotel.glabeboutique.com</code> à{" "}
+          <code className="bg-[#F5F7FA] text-brand-blue font-bold px-1.5 py-0.5 rounded font-mono border border-brand-blue/5">hopital.glabeboutique.com</code>, GLABTECH utilise un protocole d'échange de jetons web décentralisés (JWT). Cela garantit une expérience utilisateur fluide sans réauthentification répétée, similaire aux architectures avancées de Monday, Notion ou Zoho portals.
         </p>
+      </div>
+
+      {/* NEW: GUIDE ET SIMULATEUR D'INTÉGRATION DES APPLICATIONS WEB CLIENTS */}
+      <div className="bg-white border border-slate-150 rounded-2xl p-6 shadow-premium">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-100 pb-4 mb-5 gap-3">
+          <div>
+            <h3 className="font-extrabold text-sm text-[#0B1F3A] flex items-center gap-2">
+              <Code2 className="h-5 w-5 text-brand-orange" /> Guide Technique : Brancher vos applications web sur le SSO G-Eboutique
+            </h3>
+            <p className="text-[11px] text-slate-500 mt-0.5 leading-normal font-medium">
+              Comment connecter vos applications métiers ou secondaires (ex: boutique de vêtements, portail d'un créateur externe, ERP auxiliaire) au guichet unique SaaS.
+            </p>
+          </div>
+          <span className="self-start sm:self-auto text-[9.5px] font-mono font-bold bg-[#FF7A00]/10 text-brand-orange px-2.5 py-1 rounded-full flex items-center gap-1.5">
+            <Sparkles className="h-3.5 w-3.5 animate-pulse" /> SDK Dev Kit v1.4
+          </span>
+        </div>
+
+        {/* 3-Step Integration workflow description */}
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-5 mb-6 text-slate-800">
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 relative">
+            <span className="absolute top-3 right-3 text-slate-300 font-mono text-xl font-black">01</span>
+            <span className="font-extrabold text-xs text-brand-blue block mb-1">1. Rediriger l'utilisateur</span>
+            <p className="text-[11px] text-slate-500 leading-normal font-medium">
+              Dans vos applications web personnalisées, placez un bouton de connexion SSO qui redirige l'utilisateur vers notre portail centralisé d'authentification sécurisée :
+            </p>
+            <code className="block text-[9.5px] font-mono bg-white border border-slate-200 p-2 rounded-lg mt-2.5 overflow-hidden text-ellipsis whitespace-nowrap text-slate-700 select-all font-bold">
+              https://auth.glabeboutique.com/sso?client_id=YOUR_CLIENT_ID&amp;redirect_uri=CALLBACK_URL
+            </code>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 relative">
+            <span className="absolute top-3 right-3 text-slate-300 font-mono text-xl font-black">02</span>
+            <span className="font-extrabold text-xs text-brand-blue block mb-1">2. Intercepter le jeton</span>
+            <p className="text-[11px] text-slate-500 leading-normal font-medium">
+              Après identification réussie par le SSO, notre serveur redirige instantanément l'utilisateur vers votre URL de callback avec l'accès sécurisé sous forme de jeton JWT :
+            </p>
+            <code className="block text-[9.5px] font-mono bg-white border border-slate-200 p-2 rounded-lg mt-2.5 overflow-hidden text-ellipsis whitespace-nowrap text-brand-orange font-bold select-all">
+              https://votre-app.com/auth/callback?token=eyJhbGciOi...
+            </code>
+          </div>
+
+          <div className="p-4 rounded-xl bg-slate-50 border border-slate-100 relative">
+            <span className="absolute top-3 right-3 text-slate-300 font-mono text-xl font-black">03</span>
+            <span className="font-extrabold text-xs text-brand-blue block mb-1">3. Valider le JWT</span>
+            <p className="text-[11px] text-slate-500 leading-normal font-medium">
+              Votre serveur client valide la signature cryptographique du jeton grâce à notre clé RSA publique, puis connecte l'utilisateur localement selon son profil :
+            </p>
+            <code className="block text-[9.5px] font-mono bg-emerald-50 text-emerald-800 border border-emerald-150 p-2 rounded-lg mt-2.5 font-bold">
+              ✓ Token SSO RSA-256 Validé
+            </code>
+          </div>
+        </div>
+
+        {/* Code Snippet Tabs + Live Simulator Panel */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          
+          {/* SDK Developer Snippets (7 cols) */}
+          <div className="lg:col-span-7 flex flex-col justify-between border border-slate-800 rounded-xl overflow-hidden bg-slate-900 text-slate-100 shadow-inner">
+            <div>
+              {/* SDK Language Header Selector */}
+              <div className="bg-slate-950/85 px-4 py-2.5 flex items-center justify-between border-b border-slate-800">
+                <div className="flex gap-2">
+                  <button
+                    type="button"
+                    onClick={() => setActiveSdkLanguage("node")}
+                    className={`px-3 py-1 rounded text-xs font-mono font-bold transition-all cursor-pointer border-0 ${
+                      activeSdkLanguage === "node" ? "bg-[#FF7A00] text-white" : "text-slate-400 hover:text-slate-100 hover:bg-slate-800 bg-transparent"
+                    }`}
+                  >
+                    Node.js (Express)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSdkLanguage("react")}
+                    className={`px-3 py-1 rounded text-xs font-mono font-bold transition-all cursor-pointer border-0 ${
+                      activeSdkLanguage === "react" ? "bg-[#FF7A00] text-white" : "text-slate-400 hover:text-slate-100 hover:bg-slate-800 bg-transparent"
+                    }`}
+                  >
+                    React Hook (Client)
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setActiveSdkLanguage("python")}
+                    className={`px-3 py-1 rounded text-xs font-mono font-bold transition-all cursor-pointer border-0 ${
+                      activeSdkLanguage === "python" ? "bg-[#FF7A00] text-white" : "text-slate-400 hover:text-slate-100 hover:bg-slate-800 bg-transparent"
+                    }`}
+                  >
+                    Python (FastAPI)
+                  </button>
+                </div>
+                <button
+                  type="button"
+                  onClick={() => {
+                    const codeText = activeSdkLanguage === "node" ? nodeCode : activeSdkLanguage === "react" ? reactCode : pythonCode;
+                    navigator.clipboard.writeText(codeText);
+                    onNotify("Extrait de code copié !", "success");
+                  }}
+                  className="bg-transparent text-slate-450 hover:text-slate-100 font-mono text-[10.5px] flex items-center gap-1.5 border-0 cursor-pointer font-bold transition-colors"
+                >
+                  <Copy className="h-3.5 w-3.5 text-[#FF7A00]" /> Copier
+                </button>
+              </div>
+
+              {/* Code viewer */}
+              <div className="p-4 overflow-x-auto bg-[#0a0f1d] min-h-[280px]">
+                <pre className="text-[11px] font-mono text-slate-300 leading-relaxed whitespace-pre font-medium select-all">
+                  {activeSdkLanguage === "node" && nodeCode}
+                  {activeSdkLanguage === "react" && reactCode}
+                  {activeSdkLanguage === "python" && pythonCode}
+                </pre>
+              </div>
+            </div>
+
+            <div className="bg-[#060c18] px-4 py-3 border-t border-slate-800 flex items-center gap-2 text-[10px] text-slate-400 font-mono">
+              <Info className="h-4 w-4 text-[#FF7A00] flex-shrink-0" />
+              <span>Installez les dépendances npm adéquates pour déchiffrer les jetons locaux (<code className="text-[#FF7A00]">jsonwebtoken</code> ou <code className="text-[#FF7A00]">PyJWT</code>).</span>
+            </div>
+          </div>
+
+          {/* Live Simulator (5 cols) */}
+          <div className="lg:col-span-5 border border-slate-150 rounded-xl p-5 bg-slate-50/50 flex flex-col justify-between">
+            <div className="space-y-4">
+              <div className="flex items-center gap-1.5 border-b border-slate-100 pb-2">
+                <Play className="h-4 w-4 text-[#FF7A00] animate-pulse" />
+                <h4 className="font-extrabold text-xs text-brand-blue uppercase font-mono">Simulateur Interactif de Connexion</h4>
+              </div>
+              
+              <p className="text-[11px] text-slate-500 leading-relaxed font-semibold">
+                Configurez une URL fictive de retour pour tester la cinématique de validation SSO et de transmission de jeton.
+              </p>
+
+              <div className="space-y-3 font-semibold text-[#0B1F3A]">
+                <div>
+                  <label className="text-[10px] uppercase font-mono font-extrabold text-slate-400 block mb-1">Identifiant Client unique (Client ID)</label>
+                  <input
+                    type="text"
+                    value={sandboxClientId}
+                    onChange={(e) => setSandboxClientId(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-800 font-mono focus:outline-none focus:border-brand-orange font-bold font-semibold"
+                  />
+                </div>
+
+                <div>
+                  <label className="text-[10px] uppercase font-mono font-extrabold text-slate-400 block mb-1">URL de Callback (Redirect URL)</label>
+                  <input
+                    type="text"
+                    value={sandboxRedirectUrl}
+                    onChange={(e) => setSandboxRedirectUrl(e.target.value)}
+                    className="w-full bg-white border border-slate-200 rounded-lg px-3 py-1.5 text-xs text-slate-850 font-mono focus:outline-none focus:border-brand-orange font-bold font-semibold"
+                  />
+                </div>
+              </div>
+
+              {/* Simulation Sequence visualizer */}
+              {isSimulatingSsoFlow && (
+                <div className="p-3.5 bg-white border border-slate-250/25 rounded-xl space-y-3.5 animate-fadeIn">
+                  <div className="flex items-center justify-between text-[11px] font-mono font-extrabold">
+                    <span className="text-[#0B1F3A] uppercase">Étape actuelle :</span>
+                    <span className="text-[#FF7A00]">{simulatedStep * 25}% effectif</span>
+                  </div>
+
+                  {/* Progress Line */}
+                  <div className="h-1.5 w-full bg-slate-100 rounded-full overflow-hidden">
+                    <div 
+                      className="bg-brand-orange h-full transition-all duration-300"
+                      style={{ width: `${simulatedStep * 25}%` }}
+                    />
+                  </div>
+
+                  {/* Steps list */}
+                  <div className="space-y-2 text-[10.5px] font-mono font-semibold">
+                    <div className="flex items-center gap-2">
+                      <span className={`h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                        simulatedStep >= 1 ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-850"
+                      }`}>1</span>
+                      <span className={simulatedStep >= 1 ? "text-slate-850 font-bold" : "text-slate-400"}>
+                        Initiation du bouton SSO cliqué
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className={`h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                        simulatedStep >= 2 ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-850"
+                      }`}>2</span>
+                      <span className={simulatedStep >= 2 ? "text-slate-850 font-bold" : "text-slate-400"}>
+                        Guichet auth.glabeboutique.com sollicité
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className={`h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                        simulatedStep >= 3 ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-850"
+                      }`}>3</span>
+                      <span className={simulatedStep >= 3 ? "text-slate-850 font-bold" : "text-slate-400"}>
+                        Jeton signé JWT {selectedRole} structuré
+                      </span>
+                    </div>
+
+                    <div className="flex items-center gap-2">
+                      <span className={`h-4.5 w-4.5 rounded-full flex items-center justify-center text-[9px] font-bold ${
+                        simulatedStep >= 4 ? "bg-emerald-500 text-white" : "bg-slate-200 text-slate-850"
+                      }`}>4</span>
+                      <span className={simulatedStep >= 4 ? "text-slate-850 font-bold" : "text-slate-400"}>
+                        Redirection vers callback/{sandboxRedirectUrl.substring(8, 26)}...
+                      </span>
+                    </div>
+                  </div>
+
+                  {/* Result Token Container */}
+                  {simulatedStep === 4 && (
+                    <div className="p-3 bg-emerald-50 border border-emerald-150 rounded-lg text-[10.5px] text-emerald-850 leading-normal animate-fadeIn space-y-1.5">
+                      <span className="font-extrabold flex items-center gap-1"><CheckCircle2 className="h-4 w-4 text-emerald-600" /> Validation SSO Virtuelle Réussie !</span>
+                      <p className="text-[9.5px] text-slate-500 font-medium">L'URL suivante a été interceptée par le script de votre application :</p>
+                      <code className="block p-2 bg-white border border-emerald-250/25 rounded font-mono break-all text-[9.2px] select-all max-h-[85px] overflow-y-auto mt-1 font-bold text-slate-800">
+                        {sandboxRedirectUrl}?token={simulatedToken}
+                      </code>
+                    </div>
+                  )}
+                </div>
+              )}
+            </div>
+
+            <div className="mt-5">
+              <button
+                type="button"
+                onClick={handleRunSimulation}
+                disabled={isSimulatingSsoFlow && simulatedStep < 4}
+                className="w-full bg-[#0B1F3A] hover:bg-[#0c2444] text-white font-extrabold text-xs py-2.5 rounded-xl border-0 shadow-sm transition-all flex items-center justify-center gap-2 cursor-pointer disabled:opacity-50"
+              >
+                {isSimulatingSsoFlow && simulatedStep < 4 ? (
+                  <>
+                    <RefreshCcw className="h-4 w-4 animate-spin text-brand-orange" />
+                    Simulation d'authentification en cours...
+                  </>
+                ) : (
+                  <>
+                    <Play className="h-4 w-4 text-brand-orange" />
+                    Lancer la simulation de flux SSO
+                  </>
+                )}
+              </button>
+            </div>
+          </div>
+
+        </div>
       </div>
 
       {/* Grid Layout splits visualizer and rules */}
@@ -291,7 +676,7 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
 
             <div className="space-y-3">
               {[
-                { name: "Global Owner", desc: "Contrôle total sur l'ensemble des bases d'organisations, DNS glabtech.com et fiches de facturation.", level: "Niveau 5 (Full)" },
+                { name: "Global Owner", desc: "Contrôle total sur l'ensemble des bases d'organisations, DNS glabeboutique.com et fiches de facturation.", level: "Niveau 5 (Full)" },
                 { name: "CTO", desc: "Droits en écriture et régénération des secrets d'APIs. Ne peut modifier le plan tarifaire de l'abonnement.", level: "Niveau 4 (Élevé)" },
                 { name: "Collaborateur", desc: "Lecture seule sur les métriques et accès aux sessions micro-applications qui lui sont explicitement déléguées.", level: "Niveau 2 (Sélectif)" },
                 { name: "Audit Externe", desc: "Lecture seule des logs d'audit uniquement. Impossible d'interagir avec les playgrounds ou les configurations SSO.", level: "Niveau 1 (Log Only)" }
@@ -562,7 +947,7 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
         </div>
 
         <p className="text-xs text-slate-500 mb-4 font-medium leading-relaxed">
-          Lorsqu'un prospect soumet un formulaire "Démarrer maintenant" depuis le portail d'applications, sa demande d'essai est enregistrée ici. En tant qu'administrateur principal SSO, vous pouvez approuver pour configurer instantanément la liane multi-tenant de son sous-domaine sur <code className="bg-[#F5F7FA] font-bold px-1 py-0.5 rounded font-mono">xxx.glabtech.com/trial</code>.
+          Lorsqu'un prospect soumet un formulaire "Démarrer maintenant" depuis le portail d'applications, sa demande d'essai est enregistrée ici. En tant qu'administrateur principal SSO, vous pouvez approuver pour configurer instantanément la liane multi-tenant de son sous-domaine sur <code className="bg-[#F5F7FA] font-bold px-1 py-0.5 rounded font-mono">xxx.glabeboutique.com/trial</code>.
         </p>
 
         {loadingRequests ? (
@@ -600,7 +985,7 @@ export default function SsoTab({ onNotify }: SsoTabProps) {
                     </td>
                     <td className="p-3">
                       <p className="font-extrabold text-[#FF7A00]">{req.companyName}</p>
-                      <code className="text-[10px] font-mono bg-[#FF7A00]/5 px-2 py-0.5 rounded border border-[#FF7A00]/10">{req.subdomain}.glabtech.com</code>
+                      <code className="text-[10px] font-mono bg-[#FF7A00]/5 px-2 py-0.5 rounded border border-[#FF7A00]/10">{req.subdomain}.glabeboutique.com</code>
                     </td>
                     <td className="p-3">
                       <span className="px-2 py-0.5 rounded text-[10px] bg-slate-100 border text-slate-700">

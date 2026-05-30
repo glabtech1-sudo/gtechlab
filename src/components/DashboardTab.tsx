@@ -533,7 +533,7 @@ export default function DashboardTab({
                     return (
                       <div key={index} className="space-y-1">
                         <div className="flex justify-between items-center text-xs font-semibold">
-                          <span className="text-slate-700 font-bold">{point.label}.glabtech.com</span>
+                          <span className="text-slate-700 font-bold">{point.label}.glabeboutique.com</span>
                           <span className="font-mono text-emerald-850 font-bold">{point.val.toLocaleString()} lignes</span>
                         </div>
                         <div className="h-3 bg-slate-100 rounded-full overflow-hidden flex">
@@ -595,7 +595,7 @@ export default function DashboardTab({
                   </div>
                   <p className="text-[10px] text-slate-500 mt-1.5 leading-normal">{wf.description}</p>
                   <p className="text-[9px] mt-2 font-mono text-emerald-700 bg-white border border-slate-100 px-2 py-0.5 rounded inline-block font-semibold">
-                    {wf.triggerApp}.glabtech.com ➜ {wf.targetApp}
+                    {wf.triggerApp}.glabeboutique.com ➜ {wf.targetApp}
                   </p>
                 </div>
               ))}
@@ -716,7 +716,7 @@ export default function DashboardTab({
                       {/* Hub application */}
                       <td className="py-3.5">
                         <span className="bg-emerald-50 text-emerald-700 border border-emerald-100 rounded-lg px-2 py-0.5 text-[10.5px] font-mono font-bold">
-                          {log.app}.glabtech.com
+                          {log.app}.glabeboutique.com
                         </span>
                       </td>
 

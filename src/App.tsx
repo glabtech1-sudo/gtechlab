@@ -129,8 +129,8 @@ export default function App() {
       stripeApiKey: "",
       invoices: [],
       users: [
-        { id: "usr-401", name: "Sandbox Tester", email: "sandbox.owner@glabtech.com", role: "Global Owner", status: "actif", lastLogin: "A l'instant", permissions: ["apps", "billing", "users", "settings"] },
-        { id: "usr-402", name: "Guest Client", email: "guest.tester@glabtech.com", role: "Guest Client", status: "actif", lastLogin: "Y a 5 jours", permissions: ["apps"] },
+        { id: "usr-401", name: "Sandbox Tester", email: "sandbox.owner@glabeboutique.com", role: "Global Owner", status: "actif", lastLogin: "A l'instant", permissions: ["apps", "billing", "users", "settings"] },
+        { id: "usr-402", name: "Guest Client", email: "guest.tester@glabeboutique.com", role: "Guest Client", status: "actif", lastLogin: "Y a 5 jours", permissions: ["apps"] },
       ]
     }
   });
@@ -252,7 +252,7 @@ export default function App() {
       {
         id: "init",
         role: "model",
-        text: "Bonjour ! Je suis le Copilote Intelligent GLABTECH. Je supervise les six microservices (hotel, resto, crm, erp, market, hopital) connectés à glabtech.com.\n\nQuelle opération d'audit, de synchronisation Postgres ou de configuration d'automatisme inter-tenant souhaitez-vous effectuer ?",
+        text: "Bonjour ! Je suis le Copilote Intelligent GLABTECH. Je supervise les six microservices (hotel, resto, crm, erp, market, hopital) connectés à glabeboutique.com.\n\nQuelle opération d'audit, de synchronisation Postgres ou de configuration d'automatisme inter-tenant souhaitez-vous effectuer ?",
         timestamp: new Date().toISOString()
       }
     ]);
@@ -547,7 +547,7 @@ export default function App() {
                 </span>
                 <span className="text-xs text-slate-350">•</span>
                 <span className="text-xs font-mono text-slate-500 flex items-center gap-1">
-                  🌐 Domaine Principal : glabtech.com
+                  🌐 Domaine Principal : glabeboutique.com
                 </span>
               </div>
               <h2 className="text-lg font-black tracking-tight text-slate-900 mt-1">
@@ -583,7 +583,7 @@ export default function App() {
                   fetchLogs();
                   fetchWorkflows();
                   fetchMetrics();
-                  showNotification("Actualisation en direct de l'ensemble de glabtech.com accomplie.", "info");
+                  showNotification("Actualisation en direct de l'ensemble de glabeboutique.com accomplie.", "info");
                 }}
                 className="p-2.5 border border-slate-200 rounded-lg bg-white text-slate-600 hover:text-slate-900 hover:bg-slate-50 transition-colors"
                 title="Synchroniser"
@@ -615,7 +615,7 @@ export default function App() {
               <div className="bg-amber-50 border border-amber-200 rounded-xl p-4 flex items-start gap-3">
                 <AlertTriangle className="h-5 w-5 text-amber-750 mt-0.5 flex-shrink-0" />
                 <div className="flex-1">
-                  <h4 className="text-xs font-black text-amber-900 uppercase tracking-wide">Alerte de Connectivité - erp.glabtech.com</h4>
+                  <h4 className="text-xs font-black text-amber-900 uppercase tracking-wide">Alerte de Connectivité - erp.glabeboutique.com</h4>
                   <p className="text-xs text-amber-700 mt-1 leading-relaxed">
                     Le noyau ERP signale une latence de ping anormale de ({erpApp.ping}ms). Les transactions stockées de facturation s'exécutent normalement via le SSO mais nous vous suggérons de demander à notre Copilote IA d'exécuter un diagnostic système rapide.
                   </p>
@@ -623,7 +623,7 @@ export default function App() {
                 <button 
                   onClick={() => {
                     setIsCopilotOpen(true);
-                    handleSendChat("Fais-moi un rapport détaillé sur l'anomalie de connexion de l'ERP erp.glabtech.com et des résolutions recommandées.");
+                    handleSendChat("Fais-moi un rapport détaillé sur l'anomalie de connexion de l'ERP erp.glabeboutique.com et des résolutions recommandées.");
                   }}
                   className="px-3 py-1.5 bg-amber-100 hover:bg-amber-200 text-amber-900 rounded text-[11px] font-bold font-mono transition-all cursor-pointer whitespace-nowrap"
                 >
@@ -838,7 +838,7 @@ export default function App() {
                 <label className="block text-[10px] font-mono text-slate-400 uppercase mb-1">Fédération DNS (Subdomain URL) *</label>
                 <input 
                   type="text" 
-                  placeholder="Ex : https://market.glabtech.com"
+                  placeholder="Ex : https://market.glabeboutique.com"
                   required
                   value={newAppUrl}
                   onChange={(e) => setNewAppUrl(e.target.value)}

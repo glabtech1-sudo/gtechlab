@@ -80,7 +80,7 @@ export default function AuthPage({ onAuthSuccess, onBackToLanding, initialMode =
       tenant: org,
       iat: Math.floor(Date.now() / 1000),
       exp: Math.floor(Date.now() / 1000) + 3600,
-      iss: "https://auth.glabtech.com",
+      iss: "https://auth.glabeboutique.com",
       aud: "glab-federated-sso"
     }));
     const signature = "RSA_SIG_SsoUnifieGlabL2026_" + Math.random().toString(36).substring(2, 12).toUpperCase();
